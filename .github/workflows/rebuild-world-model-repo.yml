@@ -33,7 +33,7 @@ jobs:
           rm -rf /tmp/recovered-textcore
           mkdir -p /tmp/recovered-textcore
           unzip -o /tmp/world-model-textcore-repaired.zip -d /tmp/recovered-textcore || true
-      - name: Persist only known-good recovered files
+      - name: Persist known-good recovered files
         shell: bash
         run: |
           set -euo pipefail
@@ -48,19 +48,7 @@ jobs:
           for f in 03_verify_v0_4.py 04_RESULTS_V0_4.json 04_TOY_A_GRID_V0_4.csv 05_VERIFY_STDOUT_V0_4.txt 06_AUTHOR_RESPONSE_TO_V0_3_REVIEW.md 07_SOURCE_NOTES_V0_4.md 08_REVIEW_HANDOFF_V0_4.md 10_INDEPENDENT_REVIEW_V0_2_SPINE.md; do
             test -s "/tmp/recovered-textcore/framework/accepted-v0.4/$f" && cp "/tmp/recovered-textcore/framework/accepted-v0.4/$f" "recovery/textcore-salvage/framework/accepted-v0.4/$f"
           done
-          cat > recovery/textcore-salvage/RECOVERY_REPORT.md <<'EOF'
-# Text-core recovery report
-
-Recovered non-destructively from the truncated staged ZIP on `rebuild/world-model-complete` using `zip -FF`.
-
-Known damaged entries intentionally excluded from the persisted salvage:
-
-- `archive/REPOSITORY_IMPORT_SHA256SUMS.txt` — invalid compressed data during salvage.
-- `framework/accepted-v0.4/11_independent_check.py` — invalid compressed data / empty extraction.
-- a duplicate `TEXT_CORE_SHA256SUMS.txt` entry — bad CRC; only the first non-empty recovered copy is retained.
-
-The original `.import` and `.recovery` transport material is intentionally preserved.
-EOF
+          printf '%s\n' '# Text-core recovery report' '' 'Recovered non-destructively from the truncated staged ZIP on `rebuild/world-model-complete` using `zip -FF`.' '' 'Known damaged entries intentionally excluded from the persisted salvage:' '' '- `archive/REPOSITORY_IMPORT_SHA256SUMS.txt` — invalid compressed data during salvage.' '- `framework/accepted-v0.4/11_independent_check.py` — invalid compressed data / empty extraction.' '- a duplicate `TEXT_CORE_SHA256SUMS.txt` entry — bad CRC; only the first non-empty recovered copy is retained.' '' 'The original `.import` and `.recovery` transport material is intentionally preserved.' > recovery/textcore-salvage/RECOVERY_REPORT.md
           (cd recovery/textcore-salvage && find . -type f ! -name RECOVERY_SHA256SUMS.txt -print0 | sort -z | xargs -0 sha256sum > RECOVERY_SHA256SUMS.txt)
           git add recovery/textcore-salvage
           git diff --cached --check
