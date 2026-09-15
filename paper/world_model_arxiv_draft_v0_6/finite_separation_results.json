@@ -2,31 +2,100 @@
   "metric_convention": "TV/IPM uses L1 convention sum|p-q|; halve for half-normalised TV",
   "toy_A_L0_pass_L2_fail": {
     "L0_phase_frontier": {
-      "delta_alias": {"error": 0.0, "case_count": 2, "status": "PASS"},
-      "delta_fit": {"error": 0.0, "case_count": 7, "status": "PASS"},
+      "delta_alias": {
+        "error": 0.0,
+        "case_count": 2,
+        "status": "PASS"
+      },
+      "delta_fit": {
+        "error": 0.0,
+        "case_count": 7,
+        "status": "PASS"
+      },
       "delta_roll": {
-        "1": {"error": 0.0, "case_count": 7, "status": "PASS"},
-        "2": {"error": 0.0, "case_count": 2, "status": "PASS"},
-        "3": {"error": null, "case_count": 0, "status": "NOT_APPLICABLE"}
+        "1": {
+          "error": 0.0,
+          "case_count": 7,
+          "status": "PASS"
+        },
+        "2": {
+          "error": 0.0,
+          "case_count": 2,
+          "status": "PASS"
+        },
+        "3": {
+          "error": null,
+          "case_count": 0,
+          "status": "NOT_APPLICABLE"
+        }
       },
       "eta_q_phase": {
-        "0": {"error": 0.0, "case_count": 3, "query_bearing_case_count": 3, "status": "PASS"},
-        "1": {"error": 0.0, "case_count": 7, "query_bearing_case_count": 7, "status": "PASS"},
-        "2": {"error": 0.0, "case_count": 2, "query_bearing_case_count": 2, "status": "PASS"},
-        "3": {"error": null, "case_count": 0, "query_bearing_case_count": 0, "status": "NOT_APPLICABLE", "interpretation": "empty admissible case set"}
+        "0": {
+          "error": 0.0,
+          "case_count": 3,
+          "query_bearing_case_count": 3,
+          "status": "PASS"
+        },
+        "1": {
+          "error": 0.0,
+          "case_count": 7,
+          "query_bearing_case_count": 7,
+          "status": "PASS"
+        },
+        "2": {
+          "error": 0.0,
+          "case_count": 2,
+          "query_bearing_case_count": 2,
+          "status": "PASS"
+        },
+        "3": {
+          "error": null,
+          "case_count": 0,
+          "query_bearing_case_count": 0,
+          "status": "NOT_APPLICABLE",
+          "interpretation": "empty admissible case set"
+        }
       },
       "eta_q_mode_if_added": {
-        "0": {"error": 1.0, "case_count": 3, "query_bearing_case_count": 2, "status": "FAIL"},
-        "1": {"error": 1.0, "case_count": 7, "query_bearing_case_count": 4, "status": "FAIL"},
-        "2": {"error": 0.0, "case_count": 2, "query_bearing_case_count": 0, "status": "NOT_INFORMATIVE", "interpretation": "no mode-resolving starting history remains; do not read the zero as improved decodability"},
-        "3": {"error": null, "case_count": 0, "query_bearing_case_count": 0, "status": "NOT_APPLICABLE", "interpretation": "empty admissible case set"}
+        "0": {
+          "error": 1.0,
+          "case_count": 3,
+          "query_bearing_case_count": 2,
+          "status": "FAIL"
+        },
+        "1": {
+          "error": 1.0,
+          "case_count": 7,
+          "query_bearing_case_count": 4,
+          "status": "FAIL"
+        },
+        "2": {
+          "error": 0.0,
+          "case_count": 2,
+          "query_bearing_case_count": 0,
+          "status": "NOT_INFORMATIVE",
+          "interpretation": "no mode-resolving starting history remains; do not read the zero as improved decodability"
+        },
+        "3": {
+          "error": null,
+          "case_count": 0,
+          "query_bearing_case_count": 0,
+          "status": "NOT_APPLICABLE",
+          "interpretation": "empty admissible case set"
+        }
       },
       "frontier_statement": "A_phase passes; A_phase+mode fails at k=0 and k=1. k>=2 is not used to infer recovery when mode-bearing histories have left the case set."
     },
     "L2_contingent": {
       "history_policies_enumerated": 12,
       "coarse_policies_enumerated": 6,
-      "point_c_0.10": {"c": 0.1, "V_history": 0.9, "V_coarse": 0.5, "regret": 0.4, "analytic_regret": 0.4},
+      "point_c_0.10": {
+        "c": 0.1,
+        "V_history": 0.9,
+        "V_coarse": 0.5,
+        "regret": 0.4,
+        "analytic_regret": 0.4
+      },
       "grid_mismatches": [],
       "AP1_reward_error_u": 0.0,
       "AP1_reward_error_r": 0.5,
@@ -99,13 +168,31 @@
     ]
   },
   "toy_B_L2_pass_L0_fail": {
-    "L0": {"delta_fit_full_state": 1.5, "x_only_pushforward_error": 0.0, "status": "FAIL for any budget < 1.5 under L1-TV"},
-    "L2_G_VE": {"declared_value_class": "V_x={V:V(x,n)=v(x)}", "policies_enumerated": 256, "basis_functions_checked": 2, "max_bellman_gap": 0.0, "status": "PASS exactly"}
+    "L0": {
+      "delta_fit_full_state": 1.5,
+      "x_only_pushforward_error": 0.0,
+      "status": "FAIL for any budget < 1.5 under L1-TV"
+    },
+    "L2_G_VE": {
+      "declared_value_class": "V_x={V:V(x,n)=v(x)}",
+      "policies_enumerated": 256,
+      "basis_functions_checked": 2,
+      "max_bellman_gap": 0.0,
+      "status": "PASS exactly"
+    }
   },
   "policy_exposure_attribution": {
     "delta_alias": 2.0,
-    "restricted_B": {"mixture_weights": [0.25, 0.75], "delta_inv_latent": 1.0, "rho_pol": 0.5},
-    "rich_B": {"mixture_weights": [0.0, 1.0], "delta_inv_latent": 2.0, "rho_pol": 1.0},
+    "restricted_B": {
+      "mixture_weights": [0.25, 0.75],
+      "delta_inv_latent": 1.0,
+      "rho_pol": 0.5
+    },
+    "rich_B": {
+      "mixture_weights": [0.0, 1.0],
+      "delta_inv_latent": 2.0,
+      "rho_pol": 1.0
+    },
     "bound_checked": "0 <= delta_inv_latent <= delta_alias; rho_pol is defined only when delta_alias>0",
     "interpretation": "rho_pol is an attribution ratio for how much existing L0 aliasing can be exposed by the declared behaviour-policy class; it is not an independent world-model axis."
   },
