@@ -43,7 +43,7 @@ jobs:
             test -s "/tmp/recovered-textcore/$f" && cp "/tmp/recovered-textcore/$f" "recovery/textcore-salvage/$f"
           done
           for f in BINARY_ARTIFACT_INVENTORY.md IMMUTABLE_PACKAGE_MANIFEST.md; do
-            test -s "/tmp/recovered-textcore/archive/$f" && cp "/tmp/recovered-textcore/archive/$f" "recovery/textcore-salvage/archive/$f"
+            test -s "/tmp/recovered-textcore/archive/$f" && cp "/tmp/recovered-textcore/archive/$f" "recovery/textcore-salvage/$f"
           done
           for f in 03_verify_v0_4.py 04_RESULTS_V0_4.json 04_TOY_A_GRID_V0_4.csv 05_VERIFY_STDOUT_V0_4.txt 06_AUTHOR_RESPONSE_TO_V0_3_REVIEW.md 07_SOURCE_NOTES_V0_4.md 08_REVIEW_HANDOFF_V0_4.md 10_INDEPENDENT_REVIEW_V0_2_SPINE.md; do
             test -s "/tmp/recovered-textcore/framework/accepted-v0.4/$f" && cp "/tmp/recovered-textcore/framework/accepted-v0.4/$f" "recovery/textcore-salvage/framework/accepted-v0.4/$f"
@@ -51,7 +51,6 @@ jobs:
           printf '%s\n' '# Text-core recovery report' '' 'Recovered non-destructively from the truncated staged ZIP on `rebuild/world-model-complete` using `zip -FF`.' '' 'Known damaged entries intentionally excluded from the persisted salvage:' '' '- `archive/REPOSITORY_IMPORT_SHA256SUMS.txt` — invalid compressed data during salvage.' '- `framework/accepted-v0.4/11_independent_check.py` — invalid compressed data / empty extraction.' '- a duplicate `TEXT_CORE_SHA256SUMS.txt` entry — bad CRC; only the first non-empty recovered copy is retained.' '' 'The original `.import` and `.recovery` transport material is intentionally preserved.' > recovery/textcore-salvage/RECOVERY_REPORT.md
           (cd recovery/textcore-salvage && find . -type f ! -name RECOVERY_SHA256SUMS.txt -print0 | sort -z | xargs -0 sha256sum > RECOVERY_SHA256SUMS.txt)
           git add recovery/textcore-salvage
-          git diff --cached --check
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git commit -m 'recovery: persist verified text-core salvage'
