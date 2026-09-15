@@ -2,8 +2,9 @@
 
 **Framework spine:** v0.4 — `ACCEPT AS FRAMEWORK SPINE`  
 **Accepted artifact:** `framework/accepted-v0.4/`  
-**Current phase:** manuscript construction and prior-art verification  
-**Current manuscript package:** authoring revision v0.6, staged under `paper/world_model_arxiv_draft_v0_6/`  
+**Published / preserved manuscript milestone:** v0.6 under `paper/world_model_arxiv_draft_v0_6/`  
+**Current exploratory cycle:** state sufficiency vs world-modelhood / Toy C  
+**Current research draft:** v0.7 under `paper/world_model_profile_research_v0_7/` on the research branch  
 **Spine policy:** frozen unless a new formal review cycle is explicitly opened
 
 ## Review trajectory
@@ -12,12 +13,8 @@
 - **v0.2** — first layered L0–L3 formalisation and finite separation; `PARTIAL ACCEPT / REQUEST CHANGES`.
 - **v0.3** — executable repair, reverse separation, abstraction frontier; `PARTIAL ACCEPT / REQUEST CHANGES`.
 - **v0.4** — policy-exposure quantity moved inside L0 as `rho_pol`, support accounting fixed, claims narrowed, citations repaired; **`ACCEPT AS FRAMEWORK SPINE`**.
-
-## Manuscript recovery / import
-
-The v0.6 full authoring package recovered on 2026-09-15 was checksum-verified before import. Its import provenance and source ZIP SHA-256 are recorded in `paper/world_model_arxiv_draft_v0_6/IMPORT_MANIFEST.md`.
-
-Revision v0.6 does not reopen the accepted spine. It adds only the explicit binary-query domain guard in the exact Toy A solver; scientific outputs are unchanged from v0.5.
+- **v0.6 manuscript milestone** — preserved as published authoring state; no retroactive Toy C rewrite.
+- **v0.7 research draft** — post-v0.6 exploratory extension carrying Toy C v0.1/v0.2 into LaTeX/PDF; not an accepted framework revision.
 
 ## Accepted core
 
@@ -33,3 +30,15 @@ The components are not claimed to form a hierarchy.
 - `L2.G ⇏ L0` in Toy B.
 
 These are finite non-identity results, not a general non-collinearity theorem.
+
+## Post-v0.6 Toy C evidence
+
+Toy C does not add a framework axis. It attacks candidate modelhood boundaries.
+
+- **Toy C v0.1:** exact current belief can be supplied without giving the system an owned future-generating mechanism; the predictive-state and full-generative agents are exactly equivalent on the declared finite queries; finite lookup fit does not imply held-out compositional coverage.
+- **Toy C v0.2:** the task predictive state is a genuinely non-injective quotient of a richer full belief. Exact task-query aliasing is `0`, while the richer nuisance-query aliasing gap is exactly `19/129`.
+- **Agent E:** exact declared action-sequence prediction is possible without a persistently stored recursively updated state, weakening a strong recursive-state necessity hypothesis.
+
+Current candidate surviving falsification is intentionally weaker: possession of an internally owned mechanism able to answer declared future action-indexed queries away from the realised trajectory. This is **not** yet a definition of world model.
+
+Chronicle: `history/2026-09-15_toy_c_state_sufficiency_chronicle.md`.
