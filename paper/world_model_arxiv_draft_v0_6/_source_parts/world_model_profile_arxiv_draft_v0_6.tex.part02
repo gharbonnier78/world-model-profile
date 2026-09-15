@@ -1,0 +1,250 @@
+m pol}$ into a separate coordinate.
+
+\subsection{A minimal L2.O witness}
+
+L2.O exists because the model can influence the query distribution under which its own accuracy is measured. A deliberately minimal two-action example makes the loop explicit.
+
+Suppose the true one-step returns are
+\[
+Q_{\rm true}(a_{\rm safe})=1,
+\qquad
+Q_{\rm true}(a_{\rm unseen})=2,
+\]
+while the learned model predicts
+\[
+\hat Q(a_{\rm safe})=1,
+\qquad
+\hat Q(a_{\rm unseen})=0.
+\]
+A greedy planner under the learned model therefore selects $a_{\rm safe}$ and induces
+\[
+\mu_\Pi(a_{\rm safe})=1.
+\]
+The operational prediction error is zero precisely because the model's own error on $a_{\rm unseen}$ makes the planner avoid querying it. Under a uniform off-prior evaluation distribution, however, the mean absolute error is 1, and the planner incurs regret 1 against the global optimum.
+
+The construction is intentionally minimal; it is not a model of MuZero. It isolates the closed loop motivating L2.O: the model shapes the operating points on which it is evaluated. A representative empirical test would require a learned model and search procedure whose query distribution is genuinely endogenous, together with a declared off-prior family or non-vacuous coverage coefficient.
+
+\section{What does the profile add beyond a flat tuple?}
+
+The strongest criticism of the proposal is eliminativist. Every reported quantity is ultimately derived from more primitive objects such as the representation $\sigma$, the transition operator $K$, declared decision classes, resources and shift classes. Why not retire ``world model'' as a technical term and report
+\[
+(\sigma,K,\text{sufficiency class},\text{shift class},\text{resources},\ldots)
+\]
+directly? Naming a bundle of derived quantities does not create a natural kind, and the profile adds no raw information that could not in principle be represented elsewhere. This criticism remains live.
+
+The current positive case has three parts, and they are not equally strong.
+
+\paragraph{The abstraction frontier.}
+This is the strongest profile-level object at present. A single-level tuple reports a point: one chosen $\Aabs$ and its errors. The frontier reports where that claim stops. ``Phase passes, phase+mode fails'' requires testing and recording at least two levels and naming the separating query. The informational gain is therefore not a new primitive, but an enforced comparison across declared levels.
+
+\paragraph{Bidirectional non-implication.}
+The exact toys show that predictive abstraction and decision adequacy are not two names for the same condition. This is useful defensively, but the flat tuple can represent the same fact. The finite evidence therefore establishes non-identity, not superiority of the profile.
+
+\paragraph{L2.G versus L2.O.}
+This may be the most useful distinction operationally: a model--search pair can look accurate on the distribution it induces while being poor on the larger declared class. But that distinction would remain valuable even if the phrase ``world model'' disappeared tomorrow. It is a methodological argument for how to evaluate model--search systems, not evidence that a new natural kind has been discovered. He et al.'s analysis of MuZero provides a retrospective example rather than a prediction of this framework: evaluation confined to the search-induced region would miss the model's poorer evaluation of unseen policies, whereas widening the query contract reveals the discrepancy~\cite{he2024}.
+
+The profile earns its name only if cross-layer localisation changes what experiments we run or which failures we predict. A stronger future test would show a case where the frontier or an L2.G/L2.O distinction identifies a failure that a single-level report would have missed, or changes an ablation, shift declaration or data-collection design. Absent such evidence, the eliminativist option remains the default competitor and the burden stays on the profile.
+
+\section{Implications for adaptive learning systems and MMALS}
+
+The motivating scientific question behind this work is more specific than the definitional dispute. An adaptive learner cannot retain every detail of every past interaction indefinitely. It must in some sense quotient its history. The difficult question is when two histories may safely be treated as equivalent.
+
+The profile is useful here as an instrument rather than as a label. A history compression $\sigma$ can be closed at one predictive abstraction and fail at another. It can be adequate for one decision class and fail as soon as a new information-gathering action becomes valuable. It can look accurate on the operational region induced by the current planner while being brittle outside that region. Under shift, the whole system may compensate through memory or adaptation even when one transition model is wrong.
+
+For MMALS, the useful object is therefore not the assertion ``MMALS is a world model'', but a record of which distinctions are currently preserved, which have been deliberately quotiented away, and under which actions, evidence channels, tasks and regimes that quotient remains defensible.
+
+The present profile still assumes that the abstraction family $\Aabs$ is declared externally. The stronger continual-learning problem is to let the abstraction itself change,
+\[
+\Aabs_t\rightarrow\Aabs_{t+1}.
+\]
+That is closer to MMALS's REUSE $\rightarrow$ ADAPT $\rightarrow$ FORK $\rightarrow$ NEW REGIME logic: preserve a quotient while it remains adequate, then refine or split it when a previously discarded distinction becomes dynamically, decisionally or causally relevant.
+
+This yields the research question that now motivates the next stage:
+\begin{quote}
+Which distinctions between histories should an adaptive learner preserve, and which may it safely quotient away as its actions, evidence channels, tasks and operating regimes change?
+\end{quote}
+
+\section{Research process and transparency}
+
+The framework evolved through an explicitly adversarial drafting process. Early versions treated ``sufficiency'' as the load-bearing constitutive word and separated model from planner too sharply. Review forced the proposal to import AIS and VE as existing decision-sufficiency frameworks, to treat interface-based boundaries cautiously, and to demote behaviour-policy invariance after it was shown to be bounded by L0 aliasing. A later executable audit found that a correct numerical result had initially been supported by a non-evidential script; the script was replaced by environment-derived enumeration and independently recomputed before the present manuscript was prepared.
+
+This history is relevant because the final contribution is smaller than the initial proposal. We regard that reduction as evidence of process quality, not as a weakness to hide.
+
+\paragraph{AI-assistance disclosure.}
+The conceptual programme, problem selection, acceptance/rejection of claims, and final scientific responsibility belong to the author. AI systems were used extensively for literature navigation, drafting, mathematical challenge, code generation, and adversarial review. Independent review passes were themselves AI-assisted, but included checksum verification, clean reruns, independent code paths, and explicit reviewer disclosure. Any public submission should retain a concise disclosure appropriate to the venue and should not describe AI-assisted review as human peer review.
+
+\section{Limitations}
+
+The present evidence is intentionally narrow.
+
+\begin{itemize}
+    \item The finite constructions establish non-identity of L0 and L2 only in toy regimes.
+    \item Toy A's passing abstraction is extremely coarse; it does not establish non-degenerate non-collinearity between predictive and decision adequacy.
+    \item Toy B's decision class is explicitly blind to the nuisance variable.
+    \item $L1_{\rm int}$ and L3 remain uninstantiated by dedicated finite witnesses in this draft.
+    \item The L2.O witness is diagnostic rather than representative of learned model--search systems.
+    \item The mixture-diameter inequality used to bound $\delta_{\rm inv}^{\rm latent}$ is treated as an elementary convexity property; we do not claim novelty and have not performed an exhaustive prior-statement search across probability-metric and aggregation literatures.
+    \item The abstraction frontier is externally declared. Adaptive abstraction discovery and revision remain future work.
+    \item The term ``world model'' may ultimately be less useful than direct reporting of representation, dynamics, adequacy, and shift contracts.
+\end{itemize}
+
+\section{Conclusion}
+
+The binary question ``does this system have a world model?'' often compresses several technically different claims. We proposed a smaller alternative: report predictive abstraction, interventional validity, decision adequacy, operational model--search adequacy and shift robustness separately, under an explicit declaration tuple.
+
+The framework does not settle what a world model \emph{is}. It supplies a disciplined syntax for saying what a particular system has actually demonstrated and where that demonstration stops. Two exact finite constructions show that predictive closure and decision adequacy can come apart in both directions under declared abstractions and decision classes. A three-history diagnostic shows that policy exposure of an L0 compression defect can depend on latent-cell geometry rather than only behaviour-policy spread. A minimal L2.O example illustrates how adequacy measured only where a planner chooses to look can become self-confirming.
+
+Whether this deserves the name ``world-model profile'' remains an open explanatory question. If the profile does not improve failure localisation, comparison or experimental design, the eliminativist option should win. The more durable scientific problem is the one that motivated the exercise in the first place:
+\begin{quote}
+Which distinctions between histories should an adaptive learner preserve, and which may it safely quotient away as its actions, evidence channels, tasks and operating regimes change?
+\end{quote}
+
+\clearpage
+\appendix
+\section{Finite results summary}
+
+\begin{table}[H]
+\centering
+\caption{Exact finite evidence used in the manuscript. TV values use the L1 convention $\sum_x|p(x)-q(x)|$.}
+\begin{tabular}{@{}lll@{}}
+\toprule
+Construction & Quantity & Result \\
+\midrule
+Toy A & $\delta_{\rm alias},\delta_{\rm fit}$ at phase level & $0,0$ \\
+Toy A & Regret at $c=0.10$ & $0.40$ \\
+Toy A & Regret law & $\max(0,\frac12-c)$ \\
+Toy A & $\eta_{q_{\rm mode}}(0),\eta_{q_{\rm mode}}(1)$ & $1,1$ \\
+Toy B & full-state $\delta_{\rm fit}$ & $1.5$ \\
+Toy B & max Bellman gap on $\mathcal V_x$ & $0$ \\
+3-history diagnostic & same weight spread, geometry 1 $\rho_{\rm pol}$ & $0.5$ \\
+3-history diagnostic & same weight spread, geometry 2 $\rho_{\rm pol}$ & $0.1$ \\
+L2.O diagnostic & in-prior absolute error & $0$ \\
+L2.O diagnostic & uniform off-prior absolute error & $1$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Reproducibility boundary}
+
+Reproducibility materials accompany this manuscript. The script \path{verify_finite_separations.py} derives transition laws from explicit finite environments, enumerates the relevant policy classes, and regenerates \path{finite_separation_results.json} together with \path{toy_a_grid.csv}. The same JSON also contains a two-history policy-exposure witness: with $\delta_{\rm alias}=2$, the restricted behaviour class gives $\delta_{\rm inv}^{\rm latent}=1$ and $\rho_{\rm pol}=0.5$, whereas the rich class gives $\delta_{\rm inv}^{\rm latent}=2$ and $\rho_{\rm pol}=1$. This deliberately degenerate two-law case instantiates the Sec.~3.2 observation that $\rho_{\rm pol}$ can reduce to behaviour-weight spread; the separate three-history values $0.5$ and $0.1$ reported in Table~2 show how latent-cell geometry can make the ratio stricter than that spread.
+
+The script \path{verify_supporting_diagnostics.py} derives \path{supporting_diagnostics_results.json} for the three-history $\rho_{\rm pol}$ construction and the minimal L2.O illustration in Sec.~5, then checks the derived values against explicit expected values as a non-regression guard. The assertions are therefore regression checks in addition to, not substitutes for, derivation. For Toy A query retention, \path{verify_finite_separations.py} solves the binary-head minimax exactly from the target Bernoulli range at each deterministic latent; no grid approximation is used. \path{SHA256SUMS.txt} records checksums for the distributed manuscript source, executable scripts, machine-readable outputs, figures, and PDF. No Monte Carlo estimate is needed for the two main finite separation claims.
+
+\begin{thebibliography}{99}
+
+\bibitem{craik1943}
+K. J. W. Craik.
+\emph{The Nature of Explanation}.
+Cambridge University Press, 1943.
+
+\bibitem{conant1970}
+R. C. Conant and W. R. Ashby.
+Every good regulator of a system must be a model of that system.
+\emph{International Journal of Systems Science}, 1(2):89--97, 1970.
+doi:10.1080/00207727008920220.
+
+\bibitem{ha2018}
+D. Ha and J. Schmidhuber.
+World Models.
+arXiv:1803.10122, 2018.
+
+\bibitem{hafner2019}
+D. Hafner, T. Lillicrap, I. Fischer, R. Villegas, D. Ha, H. Lee, and J. Davidson.
+Learning Latent Dynamics for Planning from Pixels.
+In \emph{Proceedings of the 36th International Conference on Machine Learning}, PMLR 97:2555--2565, 2019.
+
+\bibitem{hafner2020}
+D. Hafner, T. Lillicrap, J. Ba, and M. Norouzi.
+Dream to Control: Learning Behaviors by Latent Imagination.
+\emph{International Conference on Learning Representations}, 2020.
+
+\bibitem{schrittwieser2020}
+J. Schrittwieser et al.
+Mastering Atari, Go, chess and shogi by planning with a learned model.
+\emph{Nature}, 588:604--609, 2020.
+doi:10.1038/s41586-020-03051-4.
+
+\bibitem{lecun2022}
+Y. LeCun.
+A Path Towards Autonomous Machine Intelligence.
+OpenReview position paper, version 0.9.2, 2022.
+
+\bibitem{chen2026}
+X. Chen et al.
+A Definition and Roadmap for World Models.
+arXiv:2607.06401, 2026.
+
+\bibitem{givan2003}
+R. Givan, T. Dean, and M. Greig.
+Equivalence notions and model minimization in Markov decision processes.
+\emph{Artificial Intelligence}, 147(1--2):163--223, 2003.
+
+\bibitem{ferns2004}
+N. Ferns, P. Panangaden, and D. Precup.
+Metrics for Finite Markov Decision Processes.
+In \emph{UAI 2004}, pages 162--169, 2004.
+
+\bibitem{li2006}
+L. Li, T. J. Walsh, and M. L. Littman.
+Towards a Unified Theory of State Abstraction for MDPs.
+\emph{ISAIM}, 2006.
+
+\bibitem{subramanian2022}
+J. Subramanian, A. Sinha, R. Seraj, and A. Mahajan.
+Approximate Information State for Approximate Planning and Reinforcement Learning in Partially Observed Systems.
+\emph{Journal of Machine Learning Research}, 23(12):1--83, 2022.
+
+\bibitem{grimm2020}
+C. Grimm, A. Barreto, S. Singh, and D. Silver.
+The Value Equivalence Principle for Model-Based Reinforcement Learning.
+\emph{NeurIPS}, 33, 2020.
+
+\bibitem{grimm2021}
+C. Grimm, A. Barreto, G. Farquhar, D. Silver, and S. Singh.
+Proper Value Equivalence.
+\emph{NeurIPS}, 34:7773--7786, 2021.
+
+\bibitem{grimm2022}
+C. Grimm, A. Barreto, and S. Singh.
+Approximate Value Equivalence.
+\emph{NeurIPS}, 35, 2022.
+
+\bibitem{ni2024}
+T. Ni, B. Eysenbach, E. Seyedsalehi, M. Ma, C. Gehring, A. Mahajan, and P.-L. Bacon.
+Bridging State and History Representations: Understanding Self-Predictive RL.
+\emph{International Conference on Learning Representations}, 2024.
+
+\bibitem{he2024}
+J. He, T. M. Moerland, J. A. de Vries, and F. A. Oliehoek.
+What Model Does MuZero Learn?
+\emph{ECAI 2024}, FAIA 392:1599--1606, 2024.
+doi:10.3233/FAIA240666.
+
+\bibitem{rubenstein2017}
+P. K. Rubenstein et al.
+Causal Consistency of Structural Equation Models.
+\emph{UAI}, 2017.
+
+\bibitem{beckers2019}
+S. Beckers and J. Y. Halpern.
+Abstracting Causal Models.
+\emph{AAAI}, 33(01):2678--2685, 2019.
+
+\bibitem{richens2024}
+J. Richens and T. Everitt.
+Robust Agents Learn Causal World Models.
+\emph{International Conference on Learning Representations}, 2024.
+
+\bibitem{richens2025}
+J. Richens, T. Everitt, and D. Abel.
+General agents need world models.
+In \emph{Proceedings of the 42nd International Conference on Machine Learning}, PMLR 267:51659--51687, 2025.
+
+\bibitem{cifuentes2026}
+S. Cifuentes.
+General Agents Contain World Models, even under Partial Observability and Stochasticity.
+arXiv:2602.03146, 2026.
+
+\end{thebibliography}
+
+\end{document}
