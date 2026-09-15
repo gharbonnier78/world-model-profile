@@ -1,0 +1,75 @@
+clare a task query family involving only future $Y$ predictions and the reward $R_{t+1}=\mathbf 1\{X_{t+1}=1\}$. Agent B stores only
++\[
++q_t=P(Y_{t+1}=1\mid h_t,\mathrm{STAY})
++=\frac14+\frac12 b_t^X.
++\]
++It ignores $Z$ and therefore discards the nuisance posterior $b_t^N$. Nevertheless, for the declared task family the exact action-conditioned prediction is
++\[
++P(Y_{t+1}=1\mid q_t,\mathrm{STAY})=q_t,
++\qquad
++P(Y_{t+1}=1\mid q_t,\mathrm{FLIP})=1-q_t,
++\]
++and the state can be updated directly after observing $Y_{t+1}$.
++
++The verifier enumerates all reachable histories through depth three: $4,32,256,2048$ histories at depths $0,1,2,3$. All exact task-family checks pass: 2340 representation/history-recomputation checks, 584 one-step predictions, 2336 recursive updates, 584 decision checks, 2304 branch-conditioned length-two checks, and 1080 open-loop action-sequence checks.
++
++The quotient is genuinely non-injective. Histories with the same $q_t$ can have different nuisance posteriors. Inside every $q$ cell the task-query aliasing is exactly zero,
++\[
++\Delta_Y=0,
++\]
++while the richer nuisance query has positive aliasing,
++\[
++\Delta_Z
++=\max_{h,h':q(h)=q(h')}
++\left|P(Z_{t+1}=1\mid h)-P(Z_{t+1}=1\mid h')\right|
++=\frac{19}{129}.
++\]
++One maximal witness has the same $q=21/82$ but nuisance beliefs $17/129$ and $112/129$, which imply $P(Z_{t+1}=1)=55/129$ and $74/129$ respectively. Thus the same representation is exact for the declared task abstraction and provably insufficient for the richer query family. This is an abstraction frontier, not a global reconstruction claim.
++
++\subsection{Agent E: falsifying a strong recursive-state requirement}
++
++Toy C v0.2 also adds Agent E. It owns the exact task-relevant dynamics but stores no persistent recursively updated latent state. For each query it starts from the raw history, recomputes the task-relevant posterior, and evaluates the requested candidate action sequence. Formally it exposes a direct map
++\[
++F_E(h_t,a_{t:t+k-1})
++=
++P(Y_{t+k}=1\mid h_t,a_{t:t+k-1}).
++\]
++It matches Agents B and C on all 1080 tested open-loop action-sequence queries.
++
++This weakens the strong hypothesis that model-like capability requires a \emph{persistently stored} recursively updateable state. Recursive state is one efficient realisation, not a necessity in this finite construction. The weaker candidate that survives is implementation-neutral: B, C and E all internally own a mechanism for answering declared future action-indexed queries away from the currently realised trajectory. Agent A does not; Control D has no such coverage off memorised support.
++
++This is still not promoted to a definition. In particular, the construction does not establish independent causal validity, regime-shift robustness, or that the declared task family is broad enough to justify the word ``world''. It instead sharpens the next falsification target: distinguish \emph{possession} of a future-query mechanism from mere \emph{access} to model-derived answers.
++
+ \section{Illustrative diagnostics}
+ 
+ The following examples illustrate two properties of the profile that are not established by the two finite non-implication constructions alone.
+@@ -552,7 +640,7 @@
+ 
+ The binary question ``does this system have a world model?'' often compresses several technically different claims. We proposed a smaller alternative: report predictive abstraction, interventional validity, decision adequacy, operational model--search adequacy and shift robustness separately, under an explicit declaration tuple.
+ 
+-The framework does not settle what a world model \emph{is}. It supplies a disciplined syntax for saying what a particular system has actually demonstrated and where that demonstration stops. Two exact finite constructions show that predictive closure and decision adequacy can come apart in both directions under declared abstractions and decision classes. A three-history diagnostic shows that policy exposure of an L0 compression defect can depend on latent-cell geometry rather than only behaviour-policy spread. A minimal L2.O example illustrates how adequacy measured only where a planner chooses to look can become self-confirming.
++The framework does not settle what a world model \emph{is}. It supplies a disciplined syntax for saying what a particular system has actually demonstrated and where that demonstration stops. Two exact finite constructions show that predictive closure and decision adequacy can come apart in both directions under declared abstractions and decision classes. A three-history diagnostic shows that policy exposure of an L0 compression defect can depend on latent-cell geometry rather than only behaviour-policy spread. A minimal L2.O example illustrates how adequacy measured only where a planner chooses to look can become self-confirming. The post-v0.6 Toy C cycle adds a different lesson: exact current-state sufficiency, task-relative predictive closure, full hidden-state reconstruction, and persistent recursive-state storage should not be silently identified. Toy C v0.2 in particular makes query breadth observable through an exact zero-versus-positive aliasing frontier and weakens a strong recursive-state necessity hypothesis before it can harden into a definition.
+ 
+ Whether this deserves the name ``world-model profile'' remains an open explanatory question. If the profile does not improve failure localisation, comparison or experimental design, the eliminativist option should win. The more durable scientific problem is the one that motivated the exercise in the first place:
+ \begin{quote}
+@@ -576,6 +664,12 @@
+ Toy A & $\eta_{q_{\rm mode}}(0),\eta_{q_{\rm mode}}(1)$ & $1,1$ \\
+ Toy B & full-state $\delta_{\rm fit}$ & $1.5$ \\
+ Toy B & max Bellman gap on $\mathcal V_x$ & $0$ \\
++Toy C v0.1 & B/C exact open-loop checks & $300/300$ \\
++Toy C v0.1 & lookup D held-out coverage & $0/64$ \\
++Toy C v0.2 & task-query alias gap $\Delta_Y$ & $0$ \\
++Toy C v0.2 & nuisance-query alias gap $\Delta_Z$ & $19/129$ \\
++Toy C v0.2 & B/C/E exact open-loop checks & $1080/1080$ \\
++Toy C v0.2 & lookup D held-out coverage & $0/512$ \\
+ 3-history diagnostic & same weight spread, geometry 1 $\rho_{\rm pol}$ & $0.5$ \\
+ 3-history diagnostic & same weight spread, geometry 2 $\rho_{\rm pol}$ & $0.1$ \\
+ L2.O diagnostic & in-prior absolute error & $0$ \\
+@@ -588,7 +682,11 @@
+ 
+ Reproducibility materials accompany this manuscript. The script \path{verify_finite_separations.py} derives transition laws from explicit finite environments, enumerates the relevant policy classes, and regenerates \path{finite_separation_results.json} together with \path{toy_a_grid.csv}. The same JSON also contains a two-history policy-exposure witness: with $\delta_{\rm alias}=2$, the restricted behaviour class gives $\delta_{\rm inv}^{\rm latent}=1$ and $\rho_{\rm pol}=0.5$, whereas the rich class gives $\delta_{\rm inv}^{\rm latent}=2$ and $\rho_{\rm pol}=1$. This deliberately degenerate two-law case instantiates the Sec.~3.2 observation that $\rho_{\rm pol}$ can reduce to behaviour-weight spread; the separate three-history values $0.5$ and $0.1$ reported in Table~2 show how latent-cell geometry can make the ratio stricter than that spread.
+ 
+-The script \path{verify_supporting_diagnostics.py} derives \path{supporting_diagnostics_results.json} for the three-history $\rho_{\rm pol}$ construction and the minimal L2.O illustration in Sec.~5, then checks the derived values against explicit expected values as a non-regression guard. The assertions are therefore regression checks in addition to, not substitutes for, derivation. For Toy A query retention, \path{verify_finite_separations.py} solves the binary-head minimax exactly from the target Bernoulli range at each deterministic latent; no grid approximation is used. \path{SHA256SUMS.txt} records checksums for the distributed manuscript source, executable scripts, machine-readable outputs, figures, and PDF. No Monte Carlo estimate is needed for the two main finite separation claims.
++The script \path{verify_supporting_diagnostics.py} derives \path{supporting_diagnostics_results.json} for the three-history $\rho_{\rm pol}$ construction and the minimal L2.O illustration in Sec.~6, then checks the derived values against explicit expected values as a non-regression guard. The assertions are therefore regression checks in addition to, not substitutes for, derivation. For Toy A query retention, \path{verify_finite_separations.py} solves the binary-head minimax exactly from the target Bernoulli range at each deterministic latent; no grid approximation is used.
++
++The post-v0.6 package adds \path{verify_toy_c_v0_1.py} with \path{results_v0_1.json}, and \path{verify_toy_c_v0_2.py} with \path{results_v0_2.json}. Both use exact rational arithmetic. Toy C v0.2 exhaustively enumerates the declared finite horizon, checks the B/C/E task-query equalities, computes the non-injective quotient witness and exact nuisance alias gap $19/129$
