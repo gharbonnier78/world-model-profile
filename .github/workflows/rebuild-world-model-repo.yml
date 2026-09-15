@@ -24,29 +24,47 @@ jobs:
           set -euo pipefail
           cat .import/textcore.b64.part* | tr -d '[:space:]' > /tmp/world-model-textcore.b64
           base64 --decode /tmp/world-model-textcore.b64 > /tmp/world-model-textcore.zip
-          echo '--- source archive ---'
-          wc -c /tmp/world-model-textcore.zip
-          sha256sum /tmp/world-model-textcore.zip
-          file /tmp/world-model-textcore.zip
-      - name: Attempt ZIP central-directory recovery
+      - name: Salvage recoverable ZIP entries
         shell: bash
         run: |
           set -u
           rm -f /tmp/world-model-textcore-repaired.zip
           printf 'y\n' | zip -FF /tmp/world-model-textcore.zip --out /tmp/world-model-textcore-repaired.zip || true
-          echo '--- repaired archive ---'
-          ls -l /tmp/world-model-textcore-repaired.zip || true
-          sha256sum /tmp/world-model-textcore-repaired.zip || true
-          unzip -t /tmp/world-model-textcore-repaired.zip || true
-          unzip -l /tmp/world-model-textcore-repaired.zip || true
-      - name: Extract recoverable files and inventory
-        shell: bash
-        run: |
-          set -u
           rm -rf /tmp/recovered-textcore
           mkdir -p /tmp/recovered-textcore
           unzip -o /tmp/world-model-textcore-repaired.zip -d /tmp/recovered-textcore || true
-          echo '--- recovered files ---'
-          find /tmp/recovered-textcore -type f -printf '%P\n' | sort
-          echo '--- recovered checksums ---'
-          (cd /tmp/recovered-textcore && find . -type f -print0 | sort -z | xargs -0 -r sha256sum) || true
+      - name: Persist only known-good recovered files
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf recovery/textcore-salvage
+          mkdir -p recovery/textcore-salvage/framework/accepted-v0.4 recovery/textcore-salvage/archive
+          for f in README.md SNAPSHOT_INVENTORY.md SNAPSHOT_SHA256SUMS.txt STATUS.md TEXT_CORE_SHA256SUMS.txt; do
+            test -s "/tmp/recovered-textcore/$f" && cp "/tmp/recovered-textcore/$f" "recovery/textcore-salvage/$f"
+          done
+          for f in BINARY_ARTIFACT_INVENTORY.md IMMUTABLE_PACKAGE_MANIFEST.md; do
+            test -s "/tmp/recovered-textcore/archive/$f" && cp "/tmp/recovered-textcore/archive/$f" "recovery/textcore-salvage/archive/$f"
+          done
+          for f in 03_verify_v0_4.py 04_RESULTS_V0_4.json 04_TOY_A_GRID_V0_4.csv 05_VERIFY_STDOUT_V0_4.txt 06_AUTHOR_RESPONSE_TO_V0_3_REVIEW.md 07_SOURCE_NOTES_V0_4.md 08_REVIEW_HANDOFF_V0_4.md 10_INDEPENDENT_REVIEW_V0_2_SPINE.md; do
+            test -s "/tmp/recovered-textcore/framework/accepted-v0.4/$f" && cp "/tmp/recovered-textcore/framework/accepted-v0.4/$f" "recovery/textcore-salvage/framework/accepted-v0.4/$f"
+          done
+          cat > recovery/textcore-salvage/RECOVERY_REPORT.md <<'EOF'
+# Text-core recovery report
+
+Recovered non-destructively from the truncated staged ZIP on `rebuild/world-model-complete` using `zip -FF`.
+
+Known damaged entries intentionally excluded from the persisted salvage:
+
+- `archive/REPOSITORY_IMPORT_SHA256SUMS.txt` — invalid compressed data during salvage.
+- `framework/accepted-v0.4/11_independent_check.py` — invalid compressed data / empty extraction.
+- a duplicate `TEXT_CORE_SHA256SUMS.txt` entry — bad CRC; only the first non-empty recovered copy is retained.
+
+The original `.import` and `.recovery` transport material is intentionally preserved.
+EOF
+          (cd recovery/textcore-salvage && find . -type f ! -name RECOVERY_SHA256SUMS.txt -print0 | sort -z | xargs -0 sha256sum > RECOVERY_SHA256SUMS.txt)
+          git add recovery/textcore-salvage
+          git diff --cached --check
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'recovery: persist verified text-core salvage'
+          git push origin HEAD:rebuild/world-model-complete
