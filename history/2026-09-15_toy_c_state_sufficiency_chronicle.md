@@ -1,6 +1,6 @@
 # Chronicle — 15 September 2026
 
-## From state sufficiency to future-generating model structure: Toy C v0.1 -> v0.2
+## From state sufficiency to future-generating model structure: Toy C v0.1 -> v0.3
 
 **Event type:** post-publication research transition / falsification cycle  
 **Evidence status:** exact finite constructions; exploratory interpretation  
@@ -90,12 +90,94 @@ This is **not yet a definition**.
 
 ---
 
-## Current hypothesis disposition
+## Toy C v0.3 — model possession versus model access
 
-- **H1 — sufficiency alone is insufficient:** retained only as an architectural separation example; Agent A has exact current belief but no future-generating interface.
-- **H2 — recursive closure is necessary:** weakened by Agent E; persistent recursive state storage is not necessary in this finite construction.
-- **H3 — action-indexed future consequences:** survives v0.2 as the common capability of B, C and E.
-- **H4 — breadth is better treated as a profile/frontier:** strengthened by exact task sufficiency and exact nuisance-query failure under the same quotient.
+v0.3 attacks the remaining word **internally** rather than adding more hidden-state complexity.
+
+The environment is kept identical to v0.2. Three future-query systems are compared on the same finite domain:
+
+- **M — local model owner:** task-relevant dynamics are inside the declared local boundary;
+- **F — delegated access:** the local agent owns no predictive mechanism and forwards queries to an external exact model service `O`;
+- **G — compiled finite answer object:** all exact answers for the finite benchmark domain are precomputed into a table, with no declared transition, update, rollout-composition or extrapolation rule.
+
+The declared benchmark `D0` contains every reachable history through depth 2 crossed with every future action sequence of length 1, 2 or 3: exactly `4088` queries of the form
+
+`P(Y_{t+k}=1 | h_t, a_{t:t+k-1})`.
+
+The exact verifier gives:
+
+- M: `4088/4088` exact;
+- F with the external oracle available: `4088/4088` exact;
+- G on its compiled domain: `4088/4088` exact.
+
+Therefore answer correctness on this finite domain cannot identify where, or even in what computational form, the predictive capability resides.
+
+The experiment then changes the evaluation contract in two ways.
+
+### Query-domain extension
+
+For the same history support but horizon-4 action sequences (`4672` queries):
+
+- M: `4672/4672` exact;
+- F with oracle: `4672/4672` exact;
+- G: `0/4672` coverage, because those queries were never compiled and G has no extrapolation rule.
+
+### External-source removal
+
+When `O` is removed:
+
+- M remains `4088/4088` exact on `D0`;
+- F has `0/4088` defined answers;
+- G remains `4088/4088` exact on the finite compiled domain, but still cannot extend to the horizon-4 domain.
+
+This produces an operational distinction between **local possession**, **delegated access**, and **finite compilation**, but only after boundary/source dependence and extension are made part of the test contract.
+
+---
+
+## Finite behavioural non-identifiability
+
+v0.3 records an elementary observation without novelty claim.
+
+For any finite declared query set `D` and deterministic exact answer mechanism `M:D -> Y`, the mapping can be compiled into a finite table containing one exact answer for each element of `D`.
+
+Therefore:
+
+> finite behavioural equivalence alone cannot prove internal generative or predictive structure.
+
+This does not make the structures equivalent outside the declared domain. It instead says that an evaluation must include something beyond finite answer matching if the scientific claim concerns **possession of mechanism** rather than **availability of answers**.
+
+Candidate discriminators include domain extension, source removal, interventions on dependencies, architectural inspection, compositional constraints, resource scaling, latency and robustness.
+
+---
+
+## System boundary becomes explicit
+
+Toy C v0.3 exposes a boundary dependence that had remained implicit.
+
+At the **local agent boundary**, F has model access but not model possession.
+
+At an **expanded `F + O` system boundary**, the composite system does contain the external predictive model service.
+
+Therefore the sentence
+
+> “the system has a world model”
+
+is under-specified unless the evaluated boundary is declared.
+
+This is not a new framework layer. For now it is better treated as explicit attribution metadata attached to a capability claim.
+
+---
+
+## Current hypothesis disposition after v0.3
+
+- **H1 — sufficiency alone is insufficient:** unchanged; still only an architectural separation example.
+- **H2 — persistent recursive state is necessary:** remains weakened by Agent E in v0.2.
+- **H3 — internally owned action-indexed future mechanism:** weakened as a system-level necessity; delegated access reproduces the same declared answers while the local agent owns no model.
+- **H4 — breadth is a profile/frontier property:** retained, now complemented by explicit system-boundary and capability-source metadata.
+
+The surviving technical question is now less ontological:
+
+> What future-query capability is available, over which query family, from which source, inside which declared boundary, and how does that capability behave under extension, source removal, intervention and shift?
 
 No accepted framework axis changes.
 
@@ -107,9 +189,11 @@ The earlier notes about local models, local-to-global constraints, divergence/co
 
 They are **not ingredients to inject into Toy C merely to make it sophisticated**.
 
-Toy C first asks what structure must be preserved. Only after that question survives falsification do the earlier mathematical bridges become relevant to the harder engineering question:
+Toy C first asks what structure must be preserved and how that capability is attributed. Only after that question survives falsification do the earlier mathematical bridges become relevant to the harder engineering question:
 
 > How can a high-dimensional, partially observed, multi-regime system discover and maintain the smallest local predictive structures, transition rules and domains of validity needed for those future queries?
+
+v0.3 adds one MMALS-relevant refinement: reusable predictive capability need not sit inside one monolithic internal object. It may be local, delegated, compiled, retrieved or reconstructed. What must remain explicit is the **domain of validity, provenance, dependency, system boundary and extension behaviour** of that capability.
 
 This preserves the MMALS principle: complexity only on evidence.
 
@@ -117,17 +201,12 @@ This preserves the MMALS principle: complexity only on evidence.
 
 ## Next candidate falsification
 
-Do not add Toy C v0.3 automatically.
+Do not create a new profile layer from Toy C v0.3.
 
-If the programme continues, attack the remaining H3-like candidate by separating:
+The next useful target, if pursued, is no longer “what implementation counts as a model?” but whether a **capability contract** can make experimentally different predictions or change an engineering decision:
 
-- **possession of an internal future-query mechanism**;
-- **access to answers derived elsewhere from such a mechanism**.
+`(query family, boundary, source, coverage, extension, availability, intervention, shift)`.
 
-Candidate controls could include an external oracle, cached planner answers, or a policy/value object that supports decisions without exposing predictive dynamics.
+If that contract adds no decision-relevant information beyond a flat technical description, the eliminativist alternative becomes stronger.
 
-The question becomes:
-
-> What observable technical property distinguishes owning a model from merely having access to model-derived answers?
-
-Until that distinction is experimentally useful, the eliminativist option remains live: report the technical tuple and query frontier rather than force a binary “world model” predicate.
+If it does, the contribution is not a metaphysical definition of world model but an auditable way to qualify future-generating capability in adaptive systems.
