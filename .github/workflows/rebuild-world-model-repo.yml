@@ -1,4 +1,4 @@
-name: Rebuild world-model repository from text-core bundle
+name: Recover world-model text-core bundle
 
 on:
   push:
@@ -10,7 +10,7 @@ permissions:
   contents: write
 
 jobs:
-  rebuild:
+  recover:
     if: github.actor != 'github-actions[bot]'
     runs-on: ubuntu-latest
     steps:
@@ -18,21 +18,35 @@ jobs:
         with:
           ref: rebuild/world-model-complete
           fetch-depth: 0
-      - name: Reconstruct and inspect transport bundle
+      - name: Reconstruct truncated bundle
         shell: bash
         run: |
           set -euo pipefail
-          echo '--- staged parts ---'
-          wc -c .import/textcore.b64.part*
-          sha256sum .import/textcore.b64.part*
           cat .import/textcore.b64.part* | tr -d '[:space:]' > /tmp/world-model-textcore.b64
           base64 --decode /tmp/world-model-textcore.b64 > /tmp/world-model-textcore.zip
-          echo '--- reconstructed archive ---'
-          wc -c /tmp/world-model-textcore.b64 /tmp/world-model-textcore.zip
+          echo '--- source archive ---'
+          wc -c /tmp/world-model-textcore.zip
           sha256sum /tmp/world-model-textcore.zip
           file /tmp/world-model-textcore.zip
-          unzip -t /tmp/world-model-textcore.zip
-      - name: Stop after diagnostics
+      - name: Attempt ZIP central-directory recovery
         shell: bash
         run: |
-          echo 'Archive is structurally valid. No repository content modified in this diagnostic run.'
+          set -u
+          rm -f /tmp/world-model-textcore-repaired.zip
+          printf 'y\n' | zip -FF /tmp/world-model-textcore.zip --out /tmp/world-model-textcore-repaired.zip || true
+          echo '--- repaired archive ---'
+          ls -l /tmp/world-model-textcore-repaired.zip || true
+          sha256sum /tmp/world-model-textcore-repaired.zip || true
+          unzip -t /tmp/world-model-textcore-repaired.zip || true
+          unzip -l /tmp/world-model-textcore-repaired.zip || true
+      - name: Extract recoverable files and inventory
+        shell: bash
+        run: |
+          set -u
+          rm -rf /tmp/recovered-textcore
+          mkdir -p /tmp/recovered-textcore
+          unzip -o /tmp/world-model-textcore-repaired.zip -d /tmp/recovered-textcore || true
+          echo '--- recovered files ---'
+          find /tmp/recovered-textcore -type f -printf '%P\n' | sort
+          echo '--- recovered checksums ---'
+          (cd /tmp/recovered-textcore && find . -type f -print0 | sort -z | xargs -0 -r sha256sum) || true
