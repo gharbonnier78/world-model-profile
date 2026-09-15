@@ -1,4 +1,4 @@
-name: Rebuild world-model repository from verified text-core bundle
+name: Rebuild world-model repository from text-core bundle
 
 on:
   push:
@@ -18,39 +18,21 @@ jobs:
         with:
           ref: rebuild/world-model-complete
           fetch-depth: 0
-      - name: Reconstruct and verify transport bundle
+      - name: Reconstruct and inspect transport bundle
         shell: bash
         run: |
           set -euo pipefail
+          echo '--- staged parts ---'
+          wc -c .import/textcore.b64.part*
+          sha256sum .import/textcore.b64.part*
           cat .import/textcore.b64.part* | tr -d '[:space:]' > /tmp/world-model-textcore.b64
           base64 --decode /tmp/world-model-textcore.b64 > /tmp/world-model-textcore.zip
-          echo '09cf6c8d7a8714d39116d50c9e048b0a692c313c4babce961e8fe5415f029ed1  /tmp/world-model-textcore.zip' | sha256sum -c -
+          echo '--- reconstructed archive ---'
+          wc -c /tmp/world-model-textcore.b64 /tmp/world-model-textcore.zip
+          sha256sum /tmp/world-model-textcore.zip
+          file /tmp/world-model-textcore.zip
           unzip -t /tmp/world-model-textcore.zip
-      - name: Replace repository content with organised tree
+      - name: Stop after diagnostics
         shell: bash
         run: |
-          set -euo pipefail
-          find . -mindepth 1 -maxdepth 1 ! -name .git ! -name .import ! -name .github -exec rm -rf {} +
-          unzip -o /tmp/world-model-textcore.zip -d .
-          mkdir -p archive/import-bundles
-          cp /tmp/world-model-textcore.zip archive/import-bundles/world_model_repo_textcore_2026-09-15.zip
-          printf '%s  %s\n' '09cf6c8d7a8714d39116d50c9e048b0a692c313c4babce961e8fe5415f029ed1' 'world_model_repo_textcore_2026-09-15.zip' > archive/import-bundles/SHA256SUMS.txt
-          rm -rf .import
-          rm -f .github/workflows/rebuild-world-model-repo.yml
-          rmdir .github/workflows 2>/dev/null || true
-          rmdir .github 2>/dev/null || true
-      - name: Verify imported per-file checksums
-        shell: bash
-        run: |
-          set -euo pipefail
-          sha256sum -c TEXT_CORE_SHA256SUMS.txt
-      - name: Commit reconstructed repository
-        shell: bash
-        run: |
-          set -euo pipefail
-          git config user.name 'github-actions[bot]'
-          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add -A
-          git diff --cached --check
-          git commit -m 'archive: reconstruct complete world-model research text lineage'
-          git push origin HEAD:rebuild/world-model-complete
+          echo 'Archive is structurally valid. No repository content modified in this diagnostic run.'
