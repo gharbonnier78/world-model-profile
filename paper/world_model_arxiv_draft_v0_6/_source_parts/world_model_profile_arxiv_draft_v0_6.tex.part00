@@ -1,0 +1,158 @@
+\documentclass[10pt]{article}
+\usepackage[margin=0.82in]{geometry}
+\usepackage{amsmath,amssymb,mathtools}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{microtype}
+\usepackage{enumitem}
+\usepackage{array}
+\usepackage{tabularx}
+\usepackage{float}
+\usepackage[hidelinks]{hyperref}
+\usepackage{xcolor}
+\setlist{nosep}
+\newcommand{\dF}{d_{\mathcal F}}
+\newcommand{\Aabs}{\mathbb A}
+\newcommand{\WMProfile}{\mathrm{WMProfile}}
+\newcommand{\NA}{\texttt{N/A}}
+\title{\textbf{Beyond ``Has a World Model?'':}\\
+A Layered Profile of Predictive Abstraction, Intervention,\\
+Decision Sufficiency, and Robustness under Shift}
+\author{Guillaume Harbonnier\\MMALS Research Program}
+\date{9 September 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+The term \emph{world model} is used for systems that differ substantially in what they represent, what they predict, how they are queried, and what kinds of decisions or shifts they support. This makes the binary question ``does system $X$ have a world model?'' too coarse for technical comparison. We propose instead a declared, layered evaluation profile. L0 measures predictive closure at a stated abstraction frontier; $L1_{\rm int}$ concerns interventional validity of the abstract dynamics; L2 separates class-level decision adequacy from operational model--search adequacy; and L3 records system-level robustness under a declared shift class. Acquisition-policy exposure is not treated as an independent layer: an elementary convexity argument bounds it by L0 aliasing, so we report it only as an attribution ratio inside L0. The profile is explicitly grounded in classical state abstraction and bisimulation, approximate information states, value equivalence, self-predictive representations, causal abstraction, and recent analyses of learned planning models. Two exact finite constructions establish only that L0 and L2 are non-identical coordinates: one representation is predictively closed at a coarse abstraction while incurring positive contingent-decision regret, while a second model is exactly value-equivalent on a declared value class despite failing full-state predictive closure. We additionally give illustrative diagnostics for the geometry dependence of the acquisition-policy attribution ratio and for a minimal operational-vs-global adequacy failure. We do not claim a unique definition of world models, a necessary-and-sufficient theory, or superiority over the eliminativist alternative of reporting the underlying technical tuple directly.
+\end{abstract}
+
+\paragraph{Scope and evidence.}
+The profile proposed here is an evaluation framework, not a peer-reviewed theory or a claim to a unique definition of world models. Its two main finite separation results are exact and reproducible from explicit finite environments. Other coordinates combine literature-grounded criteria with evaluation contracts that remain only partly instantiated in this manuscript, and the additional diagnostics are illustrative rather than general empirical validation. Whether the profile improves practical comparison or failure localisation beyond direct reporting of its primitive objects remains open.
+
+\section{Introduction}
+
+Consider two systems that can both reasonably attract the label ``world model'' while supporting very different claims. A passive, non-action-conditioned video predictor may forecast future observations accurately and therefore be predictively strong at the observation level, yet provide no declared semantics for intervention or decision. MuZero sits almost at the opposite end: its learned dynamics need not be a faithful simulator across unseen policies, yet they can support strong planning on the query distribution induced by search~\cite{schrittwieser2020,he2024}. These systems are not simply better and worse points on one scale. They answer different technical questions.
+
+That tension recurs across the literature. Ha and Schmidhuber used the term for a learned compressed spatiotemporal model supporting policies trained inside imagined rollouts~\cite{ha2018}. PlaNet learned latent dynamics from pixels and planned in latent space~\cite{hafner2019}; Dreamer learned behaviour by latent imagination~\cite{hafner2020}. LeCun's autonomous-machine proposal places a configurable predictive world model inside a larger agent and emphasises multiple abstraction levels and joint-embedding prediction~\cite{lecun2022}. Chen et al. explicitly note the lack of consensus and propose a resource-relative, compression-oriented account~\cite{chen2026}.
+
+The motivating question for this paper came from a narrower problem in adaptive learning: \emph{which distinctions in an agent's history may be safely discarded, and which must be preserved because later actions, evidence or tasks may make them relevant?} The label ``world model'' turned that question into several questions at once:
+\begin{enumerate}
+    \item What aspects of past observations are represented internally?
+    \item Can the representation be advanced through an internal transition operator without reconstructing the next observation?
+    \item Is the representation or model adequate for a particular planning or decision problem?
+    \item Does the whole system remain adequate when the intervention regime or environment changes?
+\end{enumerate}
+A single yes/no predicate tends to collapse these questions. A representation can be predictively closed at one abstraction and inadequate for a decision that depends on information it discards. Conversely, a model can preserve every Bellman computation relevant to a restricted decision class while being predictively wrong about variables that the decision class ignores.
+
+This paper therefore asks a narrower question than ``what is the true definition of a world model?'':
+\begin{quote}
+Can a declared profile separate technically distinct claims that are often compressed into the phrase ``has a world model'', while remaining explicit about its own limits and about existing state-abstraction theory?
+\end{quote}
+
+Our answer is a profile
+\[
+\WMProfile_{\mathcal D}(X)
+=
+\langle L0[\rho_{\rm pol}],L1_{\rm int},L2.G,L2.O,L3\rangle,
+\]
+where each entry is reported as \emph{pass with measured budget}, \emph{fail}, \emph{not declared}, or \emph{not applicable}. The profile is not a hierarchy: the coordinates quantify different questions, and the finite evidence in this paper establishes only non-identity of L0 and L2 in two controlled constructions.
+
+The main contributions are deliberately modest:
+\begin{itemize}
+    \item We formulate L0 as a \emph{predictive abstraction frontier}: the report names the finest tested abstraction level at which declared budgets hold and, when available, a natural richer level that fails.
+    \item We separate class-level decision adequacy (L2.G) from operational model--search adequacy (L2.O), so that performance measured on a planner's self-induced query distribution is not silently read as a global claim.
+    \item We show exactly in finite constructions that $L0\not\Rightarrow L2$ and $L2.G\not\Rightarrow L0$ under explicit declarations. Interventional validity remains a separate coordinate, while acquisition-policy exposure is retained only as an attribution diagnostic inside L0.
+\end{itemize}
+
+We keep a competing eliminativist position alive throughout: the term \emph{world model} may ultimately add less than a direct report of $(\sigma,K,\text{sufficiency class},\text{shift class},\ldots)$. The paper's burden is therefore not to defend a label, but to show whether the profile improves localisation of what a system has and has not demonstrated.
+
+\section{Lineage and related work}
+
+\subsection{Internal models, regulation, and anticipation}
+
+The intuition that intelligent regulation requires an internal surrogate of external dynamics predates modern machine learning. Craik argued that nervous systems can carry internal models that parallel external events and allow anticipation~\cite{craik1943}. Conant and Ashby formalised a closely related regulator-model relation under explicit assumptions in the good-regulator theorem~\cite{conant1970}. We cite these works as conceptual lineage only; the present profile is not a derivation of either theorem.
+
+Modern world-model systems made the idea computational. Ha and Schmidhuber combined compressed visual representations with recurrent dynamics~\cite{ha2018}. PlaNet explicitly learned a transition model, observation model, reward model, and approximate belief from history, then used the latent dynamics for planning~\cite{hafner2019}. Dreamer shifted behaviour learning into imagined latent trajectories~\cite{hafner2020}. MuZero demonstrated that a learned model need not reconstruct environment observations or rules to support high-performance planning; it can instead preserve reward, value and policy-relevant predictions~\cite{schrittwieser2020}. These systems motivate the question of what a model must preserve, but they do not by themselves define a universal criterion.
+
+\subsection{Abstraction is not new}
+
+Any framework that compresses histories into latent states must be positioned against classical abstraction theory. Givan, Dean and Greig developed stochastic bisimulation and model minimisation~\cite{givan2003}. Ferns, Panangaden and Precup introduced bisimulation metrics and value-related bounds~\cite{ferns2004}. Li, Walsh and Littman organised state abstractions ranging from model-irrelevance to value-, action-, and policy-oriented notions~\cite{li2006}. The present L0 coordinate is therefore not proposed as a new theory of state abstraction. Its closest analogue is a reward-free/model-level abstraction claim, augmented here by an explicit query-defined frontier and embedded in a profile that separately records decision and robustness claims.
+
+This distinction matters because the profile's contribution, if any, cannot be ``abstraction exists''. State abstraction, approximate information states and value-equivalent modelling already provide mature formalisms for different parts of the problem. They are often reported under different technical contracts, however, so evidence established in one register can be read as evidence in another. The proposed contribution is therefore a reporting and localisation discipline: declare which abstraction is being preserved, which decision class is being protected, and which robustness or intervention claim is actually being made.
+
+\subsection{Information states and decision-relative adequacy}
+
+In partially observed systems, the full observation-action history can be replaced by an information state when that statistic is sufficient for the relevant dynamic program. Approximate Information State (AIS) makes this operational by defining reward- and next-information-state approximation conditions under a declared integral probability metric and deriving value/policy-loss guarantees under the theorem assumptions~\cite{subramanian2022}. This addresses a central weakness of vague phrases such as ``sufficient representation'': it provides checkable conditions that imply decision guarantees.
+
+Value Equivalence (VE) approaches adequacy from a different direction. Instead of asking whether a history statistic approximates an information state, it asks whether a learned model induces the Bellman computations that matter over declared policy and value-function classes~\cite{grimm2020}. Proper and approximate variants extend the programme~\cite{grimm2021,grimm2022}. These literatures motivate our decision-relative L2 coordinate. They also prevent us from claiming as novel the generic fact that preserving one-step or restricted predictive quantities is weaker than preserving all longer-horizon decision structure.
+
+\subsection{Self-predictive representations and abstraction level}
+
+Self-predictive reinforcement-learning work analyses representations that can predict their own next latent state and relates such conditions to other state/history abstractions~\cite{ni2024}. LeCun's JEPA-oriented proposal similarly emphasises prediction in representation space and multiple abstraction levels rather than reconstruction of all observation details~\cite{lecun2022}. These ideas motivate two commitments in L0: the model must support internal predictive closure, and the abstraction level must be declared rather than left implicit.
+
+This is also why a video generator is not excluded by definition. If the declared abstraction level is the observation itself, an accurate video generator may pass L0 there. That says nothing about whether the same system passes at a causal, object-centric, control-relevant, or decision-relevant abstraction.
+
+\subsection{Planning, query distributions, and extractable models}
+
+A planner and a learned model cannot always be separated cleanly by interface. He et al. show that MuZero's learned model generalises poorly to evaluating unseen policies, while the policy prior in search steers computation towards regions in which the model is more accurate~\cite{he2024}. This motivates our separation between class-level adequacy and operational model--search adequacy.
+
+Complementary capability theorems show that sufficiently general goal-directed agents contain enough predictive information for an environment model to be extracted from their policies~\cite{richens2025}. Cifuentes extends this type of result to stochastic agents under partial observability~\cite{cifuentes2026}. These theorems defeat simple interface-based exclusion rules: a system need not expose a module called ``world model'' for predictive environment structure to be recoverable from its behaviour. They do not, however, establish that a planner component is identical to a world model.
+
+\subsection{Causal abstraction and robustness under shift}
+
+Intervention on a lossy quotient is not automatically well defined. Work on causal abstraction and exact transformations formalises when causal relationships survive abstraction~\cite{rubenstein2017,beckers2019}. Richens and Everitt further show, under their stated robustness conditions involving local interventions on all environment variables, that robust agents must encode extractable approximate causal structure~\cite{richens2024}. We therefore keep causal/interventional validity separate from ordinary predictive closure and make robustness claims relative to a declared shift class rather than treating causality as constitutive of every world model.
+
+\subsection{Definition by resources versus definition by task}
+
+Chen et al. propose a recent perspective in which world models are fundamentally compression-based models of world transition processes under finite computational resources~\cite{chen2026}. That view is importantly different from task-relative definitions that make decision usefulness constitutive. Our profile separates these concerns: L0 is task-free but abstraction-relative; task-relative sufficiency enters only at L2. This does not make the profile compatible with every definition. It is better understood as an explication syntax for reporting what a system demonstrably preserves.
+
+\section{A declared world-model profile}
+
+Let the history at time $t$ be
+\[
+h_t=(o_{\le t},a_{<t})\in\mathcal H,
+\]
+and let a representation map compress history to
+\[
+z_t=\sigma(h_t)\in\mathcal Z.
+\]
+Let $a_t\in\mathcal A$, and let $d_{\mathcal F}$ denote a declared integral probability metric (IPM).
+
+Before reporting any layer, declare
+\[
+\mathcal D=
+\Big(
+\underbrace{\Aabs,H_{\Aabs},\Omega_0,\mathcal F,\mathcal B}_{L0};
+\underbrace{\mathcal I}_{L1_{\rm int}};
+\underbrace{\mathcal T,H,\Pi,\pi_{\rm ref},\mathcal U,\varepsilon,R,\mathcal N}_{L2};
+\underbrace{\Delta,\pi_{\rm ref}}_{L3}
+\Big).
+\]
+Here $\Aabs$ is a family of measurable queries $q:S\to Y_q$ that defines the abstraction level; $H_{\Aabs}$ is a rollout horizon; $\Omega_0$ the support over which the claim is made; $\mathcal B$ a behaviour/acquisition-policy class; $\mathcal I$ a family of interventions; $(\mathcal T,H,\Pi,\pi_{\rm ref},\mathcal U,\varepsilon,R)$ a decision contract; $\mathcal N$ an off-prior evaluation family or equivalent coverage condition; and $\Delta$ a shift class.
+
+An undeclared component has no default. A layer is reported as \emph{pass with measured budget}, \emph{fail}, \emph{not declared}, or \emph{not applicable}. The reporting discipline is structurally similar to engineering qualification: scope is fixed before measurement, budgets and admissible-case coverage are explicit, and an untested condition is not reported as a pass.
+
+\begin{table}[t]
+\centering
+\caption{Interpretation of the profile coordinates. Acquisition-policy exposure $\rho_{\rm pol}$ is an L0 diagnostic, not an independent layer.}
+\begin{tabularx}{\linewidth}{@{}lX X@{}}
+\toprule
+Coordinate & Question & Typical evidence \\
+\midrule
+L0 & What predictive abstraction is closed and retained? & Aliasing, fit, rollout, query-retention frontier \\
+$\rho_{\rm pol}$ & How much of an existing L0 aliasing defect can the declared acquisition-policy class expose? & Mixture-diameter attribution ratio \\
+$L1_{\rm int}$ & Are abstract transition claims interventionally valid? & Causal-abstraction guard, interventional calibration \\
+L2.G & Is the model/representation adequate over the declared decision class? & AIS or VE-style criteria; direct regret \\
+L2.O & Is the actual model--search pair adequate where it queries, and how fragile is that claim off-prior? & In-prior error + off-prior family/coverage \\
+L3 & Is the whole system robust under a declared shift class? & Uniform regret or task-specific robustness criteria \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\subsection{L0: predictive closure at an abstraction frontier}
+
+The operational question is not whether a latent model is ``predictive'' in the abstract, but whether histories that the representation treats as equivalent remain interchangeable under the projected dynamics and whether the declared properties of interest survive that quotient.
+
+De
