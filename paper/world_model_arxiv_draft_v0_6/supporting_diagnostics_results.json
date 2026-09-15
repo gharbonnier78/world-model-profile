@@ -1,0 +1,48 @@
+{
+  "metric_convention": "L1 total-variation/IPM: sum_x |p(x)-q(x)|",
+  "rho_pol_three_history": {
+    "behaviour_weights": {
+      "w": [
+        0.5,
+        0.5,
+        0.0
+      ],
+      "w_prime": [
+        0.0,
+        0.5,
+        0.5
+      ]
+    },
+    "half_L1_weight_spread": 0.5,
+    "geometry_1": {
+      "delta_alias": 2.0,
+      "delta_inv_latent": 1.0,
+      "rho_pol": 0.5
+    },
+    "geometry_2": {
+      "delta_alias": 2.0,
+      "delta_inv_latent": 0.2,
+      "rho_pol": 0.1
+    }
+  },
+  "L2O_minimal_witness": {
+    "true_returns": {
+      "safe": 1.0,
+      "unseen": 2.0
+    },
+    "model_returns": {
+      "safe": 1.0,
+      "unseen": 0.0
+    },
+    "planner_action": "safe",
+    "mu_Pi": {
+      "safe": 1.0,
+      "unseen": 0.0
+    },
+    "operational_absolute_error": 0.0,
+    "uniform_off_prior_absolute_error": 1.0,
+    "planner_true_value": 1.0,
+    "global_optimal_true_value": 2.0,
+    "regret_vs_global_optimum": 1.0
+  }
+}
