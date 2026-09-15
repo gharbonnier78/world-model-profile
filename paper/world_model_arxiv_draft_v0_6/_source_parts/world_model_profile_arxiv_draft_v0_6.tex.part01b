@@ -1,0 +1,162 @@
+ystem's own avoidance behaviour: the model influences where it is examined, and it is examined where it appears accurate. This is the failure mode motivating the L2.G/L2.O split~\cite{he2024}.
+
+Operational evaluation must additionally report either
+\[
+E_{\rm off}^*=\sup_{\nu\in\mathcal N}E_\nu[\ell]
+\]
+or a declared coverage/concentrability coefficient such as
+\[
+C(\nu\Vert\mu_\Pi)=\sup_{z,a}\frac{\nu(z,a)}{\mu_\Pi(z,a)}.
+\]
+A single convenient off-prior distribution is not enough, because it is selected by the same evaluator reporting the result. Regret always names its comparator:
+\[
+\mathrm{Regret}(\pi;\pi_{\rm ref})=V^{\pi_{\rm ref}}-V^\pi.
+\]
+
+\subsection{L3: robustness under declared shift}
+
+L3 is system-level:
+\[
+\sup_{\delta\in\Delta}
+\mathrm{Regret}_\delta(\pi;\pi_{\rm ref})\le\rho.
+\]
+A low system-level regret does not license a claim that one latent transition kernel is robust. Online adaptation can compensate for it; memory can identify the regime; replanning can correct a poor prediction at query time; or another component can mask the internal failure. L3 therefore records a property of the system under $\Delta$, not of any one module.
+
+Causal-robustness results such as Richens and Everitt's must also be imported with their explicit intervention scope and extractability interpretation~\cite{richens2024}. Their result concerns robustness to specified local interventions on all environment variables under theorem assumptions and extractable causal structure; it is not a blanket claim that every robust system explicitly stores a causal model.
+
+\section{Exact finite evidence}
+
+\subsection{Toy A: predictive closure at a coarse frontier, contingent decision failure}
+
+Let hidden mode $M\in\{0,1\}$ be uniform. Before termination, the agent is in an unrevealed phase $u$ or a revealed phase $r$. At $u$ it may choose \texttt{commit0}, \texttt{commit1}, or \texttt{probe}. A probe costs $c$ and reveals $M$ perfectly; at $r$ the agent then commits. A correct commit yields reward 1 and an incorrect commit reward 0.
+
+Consider the coarse representation
+\[
+\sigma_C(h)=\text{phase}(h),
+\]
+which deliberately merges the revealed histories for $M=0$ and $M=1$. The mechanism is simple: the hidden mode enters the reward but does not enter the projected phase dynamics. L0 is reward-free, so the phase quotient can be exactly closed even though it has erased the distinction that later determines which commitment is correct.
+
+At
+\[
+\Aabs_{\rm phase}=\{q_{\rm phase}\},
+\]
+exact enumeration gives
+\[
+\delta_{\rm alias}=\delta_{\rm fit}=\delta_{\rm roll}(1)=\delta_{\rm roll}(2)=0,
+\]
+and zero phase-query error on every informative horizon. Yet at the richer
+\[
+\Aabs'=\{q_{\rm phase},q_{\rm mode}\},
+\]
+mode-query error is 1 at $k=0$ and $k=1$ under the L1-TV convention. At $k=2$ the raw mode-query error is zero only because the revealed, mode-bearing histories have terminated; the query-bearing case count is zero and the horizon is reported as non-informative rather than as recovered decodability.
+
+The decision consequence is exact. Enumerating all 12 deterministic history-measurable policies and all 6 deterministic $\sigma_C$-measurable policies yields
+\[
+V^*_{\rm hist}(c)=\max(\tfrac12,1-c),
+\qquad
+V^*_C(c)=\tfrac12,
+\]
+so
+\[
+\mathrm{Regret}(c)=\max(0,\tfrac12-c).
+\]
+At $c=0.10$, the history-aware optimum is $0.90$, the best coarse-policy value is $0.50$, and regret is $0.40$.
+
+Without the probe, both immediate commitments are worth $1/2$ and the coarse representation is optimal: discarding an unknowable distinction costs nothing. The probe is load-bearing because it makes the mode acquirable. For $c<1/2$, the regret can therefore be read as the value of the discarded information net of its acquisition cost,
+\[
+\mathrm{Regret}(c)=\tfrac12-c.
+\]
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.79\linewidth]{fig_toy_a_regret.png}
+\caption{Toy A. Predictive closure at the phase abstraction is exact, while the information-gathering action makes the discarded mode decision-relevant. Positive L2 regret is certified directly by policy enumeration.}
+\label{fig:toya}
+\end{figure}
+
+This construction therefore establishes only
+\[
+L0(\Aabs_{\rm phase})\not\Rightarrow L2_{\rm contingent}.
+\]
+The certificate is direct positive regret, not failure of an AIS sufficient-condition bound. AIS AP1 error remains a diagnostic: because the hidden mode affects reward, the coarse statistic fails reward prediction at the revealed phase, but failure of a sufficient condition alone would not imply positive regret.
+
+\subsection{Toy B: exact decision equivalence despite predictive failure}
+
+Let state be $s=(x,n)$, where $x\in\{0,1\}$ is decision-relevant and $n\in\{0,1,2,3\}$ is nuisance noise. Actions \texttt{stay} and \texttt{flip} update $x$ deterministically. In the true model, $n'$ is uniform. An intentionally wrong model always predicts $n'=0$ while predicting the $x'$ dynamics exactly. Reward depends only on $x$.
+
+With identity representation and full abstraction
+\[
+\Aabs_{\rm full}=\{q_x,q_n\},
+\]
+the full-state transition error is
+\[
+\delta_{\rm fit}=1.5
+\]
+under the L1-TV convention, so L0 fails for any smaller budget.
+
+Now declare the value-function class
+\[
+\mathcal V_x=\{V:V(x,n)=v(x)\}.
+\]
+A Bellman update integrates the declared $V$ over the next-state distribution. If $V$ is constant in $n$, the $n'$ marginal disappears from that integral. Because the true and approximate models have identical $x'$ marginals and identical rewards, every Bellman update on $\mathcal V_x$ is therefore identical even though the approximate model is maximally wrong about the nuisance component. Exhaustive computation over all 256 deterministic stationary policies gives maximum Bellman gap zero.
+
+Thus
+\[
+L2.G\text{-VE}=\text{pass}
+\quad\text{while}\quad
+L0(\Aabs_{\rm full})=\text{fail}.
+\]
+The limitation follows from the same mechanism: value equivalence is a property of a model paired with a declared value class. Enlarge that class to include functions sensitive to $n$, and the equivalence need not survive. This is intentionally close to classical noisy-TV/state-abstraction examples; we claim no novelty for the phenomenon itself.
+
+\subsection{Why the two constructions form a pair}
+
+The two directions are possible because L0 and L2 quantify over different index sets. L0 asks what a declared query family $\Aabs$ survives under the representation and its projected dynamics. L2 asks what a declared reward, policy or value-function class requires for decision. Neither declaration automatically dominates the other. The finite constructions therefore establish
+\[
+L0\not\Rightarrow L2,
+\qquad
+L2.G\not\Rightarrow L0,
+\]
+under explicit declarations, but they do \emph{not} establish non-collinearity in a non-degenerate regime: Toy A uses a very coarse phase abstraction, and Toy B chooses a value class blind to nuisance by construction.
+
+\section{Illustrative diagnostics}
+
+The following examples illustrate two properties of the profile that are not established by the two finite non-implication constructions alone.
+
+\subsection{A three-history witness for $\rho_{\rm pol}$}
+\label{sec:rho3}
+
+With only two member laws in a latent cell, every behaviour-induced mixture lies on the line segment joining those laws. The distance between two mixtures is then forced to scale with the behaviour-weight displacement, so the ratio $\rho_{\rm pol}$ cannot demonstrate dependence on richer cell geometry.
+
+Consider instead three histories and the same two behaviour mixtures
+\[
+w=(0.5,0.5,0),
+\qquad
+w'=(0,0.5,0.5).
+\]
+Their half-L1 weight spread is $\tfrac12\lVert w-w'\rVert_1=0.5$. The mixture bound from Sec.~3 implies
+\[
+\rho_{\rm pol}\le \frac12\lVert w-w'\rVert_1=0.5.
+\]
+
+In geometry 1, let the projected laws be $(\delta_A,\delta_B,\delta_C)$. Then $\delta_{\rm alias}=2$, the two behaviour mixtures are at distance $1$, and
+\[
+\rho_{\rm pol}=0.5,
+\]
+so the bound is tight. In geometry 2, let the laws be
+\[
+\delta_A,\quad \delta_B,\quad 0.8\delta_A+0.2\delta_B.
+\]
+The same $\delta_{\rm alias}=2$ and the same behaviour-weight spread now produce mixture distance $0.2$ and
+\[
+\rho_{\rm pol}=0.1.
+\]
+The third law lies inside the convex hull of the first two, so a substantial weight displacement can move the induced mixture only slightly. The slack in the bound is therefore geometric: $\rho_{\rm pol}$ depends jointly on what behaviour weights are reachable and on how the member laws are arranged inside the aliased cell.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.66\linewidth]{fig_rho_three_history.png}
+\caption{Same declared behaviour-weight spread, different $\rho_{\rm pol}$ because the latent-cell law geometry differs. This illustrates attribution; it is not a novelty claim.}
+\label{fig:rho3}
+\end{figure}
+
+This construction isolates the first non-degenerate case in which $\rho_{\rm pol}$ can depend on latent-cell geometry rather than only on behaviour-weight spread. It does not elevate $\rho_{\r

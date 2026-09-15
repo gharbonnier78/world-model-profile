@@ -1,0 +1,251 @@
+t saw anything not contained in the conditioning variable, then the conditional law and the
+interventional law differ, and the gap is confounding rather than model error. In an online setting
+where the agent's action is the sole intervention point and the behaviour policy is a function of the
+history, no such gap exists: `do(A_t = a)` and conditioning on `A_t = a` coincide, and `δ_do` reduces
+to ordinary transition fit. Additional content appears only with confounded offline data, or with
+interventions on variables other than the agent's action.
+
+[interpretation] This has a reporting consequence the draft should draw explicitly: in the common
+online case, `L1_int` should be reported **not applicable** rather than **pass**. A collapsed quantity
+reported as a pass is precisely the kind of silent strengthening the claim–evidence map is designed
+to prevent.
+
+[imported] The causal-abstraction guard then needs its own justification. Intervening on a lossy
+quotient is not automatically well defined: `Law(σ(H_{t+1}) | do(A_t = a))` may be an artefact of the
+particular σ rather than a property of the intervention. Work on causal consistency and exact
+transformations gives the conditions under which the abstraction commutes with intervention. Without
+one of those conditions, `δ_do` is not measuring what its notation suggests.
+
+### 3.7 `L2.G` and `L2.O`: the self-confirming loop
+
+[proposal] The split is well motivated in the draft but its central mechanism is left implicit, and
+the section is much stronger once it is stated: **`µ_Π` is not exogenous.** A planner guided by the
+model's own value estimates avoids regions the model reports as unpromising — including regions the
+model reports as unpromising *because it is wrong about them*. Prediction error measured under `µ_Π`
+is therefore partly a measurement of the model's own avoidance behaviour. The loop closes: the model
+determines where it is evaluated, and it is evaluated where it is accurate.
+
+[interpretation] This is why a coverage condition is not bureaucratic hygiene. A single hand-picked
+off-prior distribution is chosen by the same party reporting the number, so it inherits the same
+selection problem; what is needed is either a supremum over a declared family or an explicit
+concentrability coefficient. And it is why the requirement that regret name its comparator matters:
+the history-optimal comparator and the best-in-Π comparator give different numbers, and a report that
+does not say which was used cannot be audited. Toy A uses the history-optimal comparator; the paper
+should say so at the point of use.
+
+### 3.8 `L3`: system-level, and what that forbids
+
+[proposal] The draft says L3 does not entail robustness of a latent kernel and lists the reasons in a
+clause. They deserve a sentence each, because each is a distinct escape route: a system can be robust
+under shift through online adaptation, through memory that lets it recognise the regime, through
+replanning that corrects a wrong model at query time, or through a second component that compensates
+for the first. Every one of these produces low regret with a wrong internal transition operator.
+Therefore an L3 pass licenses no claim about any particular module — only about the system.
+
+[imported] The Richens–Everitt import needs both of its qualifications stated, not one. The shift
+class in the source is specific: robustness to *local interventions on all environment variables*,
+not distribution shift in general. And the causal structure is characterised by *extractability from
+the agent's behaviour*, not by explicit internal storage. Both matter for what the paper is entitled
+to say downstream, and the second is the one most often lost in citation.
+
+---
+
+## §4 Exact finite evidence
+
+The two toys are correct and the numbers reproduce. What is missing in both cases is the *mechanism*
+— the reader is told the outcome without being told why the construction produces it. Two paragraphs
+fix both.
+
+### 4.1 Toy A
+
+[finite] The mechanism sentence: **the hidden mode enters the reward and does not enter the projected
+phase dynamics.** L0 is reward-free, so a variable that moves only the reward is invisible to it — the
+phase process is genuinely closed, and its closure is not an artefact.
+
+[interpretation] But that alone would not produce any regret, and this is the point the draft skips.
+Without the probe, both commits are worth ½ and the coarse representation is *optimal*: the discarded
+distinction is unknowable at decision time, so discarding it costs nothing. The probe is load-bearing.
+It makes the discarded distinction *actionable*, and the gap it opens is exactly the value of the
+information σ threw away, net of what that information costs:
+
+```
+Regret(c) = max(0, ½ − c)   =   value of the discarded information  −  its price.
+```
+
+Read that way, the toy is not "a coarse representation performs badly". It is a statement about *when*
+a reward-irrelevant-for-dynamics distinction becomes decision-relevant: precisely when the decision
+class contains an action that acquires it. That reading also explains why L2's information-action
+closure requirement exists, and connects §4.1 back to §3.7 instead of leaving it as an isolated
+computation.
+
+[finite] One more sentence is needed for correctness of interpretation, and the draft already has it
+in compressed form — it should be expanded. The failure of the AIS AP1 condition at the revealed phase
+is **not** the certificate of L2 failure. AIS Theorem 9 is a sufficient condition for adequacy; when
+its hypothesis fails, nothing follows about regret. The certificate is the direct enumeration of all
+12 history-measurable and 6 σ_C-measurable deterministic policies. Keep the AP1 number as a
+diagnostic and say explicitly that it is not doing the work.
+
+### 4.2 Toy B
+
+[finite] The mechanism sentence here is equally short and equally absent: **a Bellman update
+integrates `V` over the next-state distribution.** If `V` is constant in `n`, the `n`-marginal of that
+distribution never enters the integral. A model may therefore be arbitrarily wrong about `n` — here,
+maximally wrong, predicting a point mass where the truth is uniform — and still induce identical
+Bellman updates for every policy and every `V` in the declared class. That is why `δ_fit = 1.5` and the
+maximum Bellman gap is exactly `0`, and it takes two sentences to make the result feel inevitable
+rather than surprising.
+
+[interpretation] The honest corollary should follow immediately: value equivalence is a property of a
+model *paired with a declared value class*, not of a model. Enlarge the class until it contains a
+function sensitive to `n` and the equivalence dissolves. This is simultaneously the toy's mechanism
+and its limitation, and stating both in the same paragraph is more convincing than putting the
+limitation in §9 where it reads as a concession.
+
+### 4.3 What ties the two together
+
+[interpretation] The draft reports the two separations as a pair without saying why they are a pair.
+The unifying observation is that L0 and L2 quantify over different objects: L0 over a declared query
+family, L2 over a declared value-function or policy class. Neither quantification dominates the other,
+so a representation can satisfy one and fail the other in either direction. The bidirectionality is
+not a coincidence of two clever constructions; it follows from the coordinates being defined over
+different index sets. One sentence, and the section acquires a spine.
+
+---
+
+## §5 Manuscript-level diagnostics
+
+### 5.1 The three-history witness
+
+[finite] The draft gives four numbers and no picture. The picture is what makes the point, and it is
+simple.
+
+With only two member laws in a latent cell, every mixture over them lies on the segment joining them.
+The distance between two mixtures is then forced: it is the weight difference times the diameter of
+the cell. The ratio `ρ_pol` therefore recovers nothing except the behaviour-class weight spread, which
+is exactly the reviewer objection the section is answering.
+
+With three or more member laws the geometry stops being degenerate, because a member law can sit
+*inside the convex hull of the others*. Moving behaviour weight onto such a law barely moves the
+mixture, even when the cell's diameter is large. That is the whole content of the two geometries:
+
+- Geometry 1, three mutually distinct point masses: `δ_alias = 2`, mixture distance `1`, so
+  `ρ_pol = 0.5` — equal to the weight spread, bound tight, no information beyond ℬ.
+- Geometry 2, third law `0.8δ_A + 0.2δ_B` inside the hull: same `δ_alias = 2`, same weight spread
+  `0.5`, mixture distance now `0.2`, so `ρ_pol = 0.1` — strictly below the spread.
+
+[proposal] With the sharper bound from §3.5 in hand, this stops being an anecdote and becomes a
+statement: `ρ_pol ≤ ½‖w − w'‖₁`, with equality when the mixture displacement is aligned with a
+diameter of the cell, and strict inequality when the cell's member laws are in general position.
+`ρ_pol` measures the *slack* in that bound, and the slack is geometric. Framed this way §5.1 answers
+the reviewer objection cleanly instead of gesturing at two numbers.
+
+### 5.2 The `L2.O` witness
+
+[interpretation] The example is arithmetically fine and reads as rigged, because one sentence is
+missing: **`µ_Π` concentrates on the safe action *because* the model is wrong about the other one.**
+The planner is not making an arbitrary choice that happens to flatter the model; the query
+distribution is a downstream consequence of the very error being measured. Without that sentence a
+referee sees a contrived assignment of numbers. With it, the example is a minimal instance of the
+closed loop, which is exactly what it is for.
+
+[open] The draft's own caveat — that this is diagnostic and not representative — should be sharpened
+into a statement of what a real version would require: a learned model and a search procedure trained
+jointly, so that the query distribution is genuinely endogenous rather than stipulated, and an
+off-prior family broad enough that the coverage coefficient is not vacuous. Naming the missing
+experiment is better than apologising for its absence.
+
+---
+
+## §6 What the profile adds beyond a flat tuple
+
+> **Author's voice — scaffolding only.** The guide reserves this section, and rightly: it is the
+> section a hostile referee reads first.
+
+The structural problem with the current version is that it states the eliminativist objection
+briefly, lists three advantages flatly, and ends with a shrug. The three moves it should make instead:
+
+**Steelman first.** [interpretation] State the objection at full strength before answering it: every
+entry in the profile is *derivable* from `(σ, K, sufficiency class, shift class, resources)`. The
+profile adds no information. Naming a bundle of derived numbers does not create a natural kind, and
+the history of this literature is not encouraging about labels that outrun their content. A reader
+who sees the objection stated this well will extend credit for the answer.
+
+**Then grade the three candidate additions honestly, rather than listing them as equals.**
+- The *abstraction frontier* is the strongest, and it is strongest for a specific reason worth
+  spelling out: the flat tuple reports a point — one declared level, one set of errors — whereas the
+  frontier reports an interval, and the interesting information is at the endpoints. "Passes at
+  phase, fails at phase+mode" is not derivable from a single-level report; it requires having tested
+  a second level and said so.
+- *Bidirectional non-implication* is real but weak. It establishes that two coordinates are distinct,
+  which the flat tuple also shows. Its value is defensive: it forecloses the reading that L0 and L2
+  are two names for one condition.
+- The *L2.G/L2.O split* is the most useful in practice, but it is a methodological point about
+  evaluating model–search pairs. It would survive intact if the phrase "world model" were abandoned
+  tomorrow. Say so.
+
+**Then name the evidence that would settle it.** [open] The section currently ends without a
+falsifier, which is out of character for the rest of the paper. Two concrete candidates: a case where
+the profile's cross-layer localisation *predicts* a failure that a single-level report does not, or a
+case where it changes an experimental design — which ablation gets run, which shift class gets
+declared. Absent either, the section should say that the eliminativist option remains the default and
+the burden is on the profile. That is a stronger position to occupy than a defended draw.
+
+---
+
+## §7 Implications for MMALS
+
+> **Author's voice — scaffolding only.**
+
+[interpretation] The structural risk is that in a general arXiv paper this section reads as motivated
+reasoning: a framework proposed in the abstract and then discovered, conveniently, to be exactly what
+one's own programme needs. Two coherent options, and the draft should pick one rather than hedge:
+
+1. **Cut to a short future-work paragraph.** The profile stands on its own; MMALS becomes one
+   sentence about where the question came from.
+2. **Make it the driving question and move it forward.** The closing question — *which distinctions
+   between histories may an adaptive learner safely quotient away, and which must be preserved
+   because they can become relevant under future actions, evidence channels, tasks or regime shifts?*
+   — is the best sentence in the paper. It is sharper than the definitional question the paper opens
+   with, and it is the sentence a reader will remember.
+
+Option 2 is the better paper, and it also resolves §1: the paper would then be about history
+compression under regime change, with the profile as the instrument, rather than about the definition
+of "world model" with MMALS appended. The `𝔸_t → 𝔸_{t+1}` problem is genuinely open and genuinely
+interesting; it is currently buried on page 9.
+
+---
+
+## §§8–10 Process, limitations, conclusion
+
+[interpretation] §8 is unusual and should be kept — a paper that reports that one of its own results
+was initially supported by a non-evidential script, and that the script was replaced, is doing
+something most papers do not. Keep it short and factual; the temptation to editorialise about process
+quality should be resisted, since the facts make the point better than the commentary does.
+
+The AI-assistance disclosure is well judged, in particular the explicit statement that AI-assisted
+review is not human peer review. The rewrite guide flags whether it belongs in the paper or only in
+repository metadata; the paper is the right place, because the alternative invites the inference that
+it was placed where fewer people would read it.
+
+[interpretation] §9's limitation list is honest and complete. One addition: the limitation identified
+in §3.1 above — that `δ_alias`, `δ_fit` and `δ_roll` are self-referential and cannot detect what σ
+destroyed — belongs there explicitly, since it is a structural property of the L0 coordinate and not
+merely a property of the toys.
+
+§10 should not restate §6. It should close on the research question from §7, which is where the work
+is actually going.
+
+---
+
+## Three things to fix while rewriting
+
+1. **The sharper `ρ_pol` bound** (§3.5). `ρ_pol ≤ ½‖w − w'‖₁` converts §5.1 from an illustration into
+   a proposition and makes the demotion of behaviour-policy invariance self-evident. Both geometries
+   in the draft satisfy it — geometry 1 tight at 0.5, geometry 2 slack at 0.1. Subject to the
+   prior-statement search the guide already mandates.
+
+2. **The missing sentence in §5.2.** State that `µ_Π` is induced by the model's own error. Without it
+   the example reads as rigged rather than minimal.
+
+3. **Two references I cannot vouch for.** Chen et al., *A Definition and Roadmap for World Models*
+   (arXiv:2607.06401), and Cifuentes (arXiv:2602.03146) both postdate what I can

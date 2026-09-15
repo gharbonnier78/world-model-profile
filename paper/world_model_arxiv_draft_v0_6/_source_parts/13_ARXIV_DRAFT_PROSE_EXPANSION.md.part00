@@ -1,0 +1,242 @@
+# Prose Expansion — arXiv Draft v0.1 (12 pp.)
+
+Target: `world_model_profile_arxiv_draft_v0_1.pdf`. Section numbers follow that draft.
+
+The draft's problem is not that anything is wrong. It is that almost every paragraph states a
+result and then moves on, so the reader is never told *why* a quantity has the form it has, *what*
+defect it catches, or *what* it structurally cannot catch. Sections 3 and 4 are the worst offenders:
+§3 is a wall of definitions with roughly one clause of explanation each, and §4 states the toy
+outcomes without ever explaining the mechanism that produces them.
+
+What follows is expanded prose for the sections where explanation is missing, and argument
+scaffolding for the four sections the rewrite guide reserves for the author's own voice. Nothing here
+changes the frozen spine: the coordinates remain `L0[ρ_pol], L1_int, L2.G, L2.O, L3`, ρ_pol remains a
+diagnostic inside L0, and the finite claims remain only `L0 ⇏ L2` and `L2.G ⇏ L0`.
+
+Per the rewrite guide's step 5, each block carries a marker: **[imported]**, **[finite]**,
+**[proposal]**, **[interpretation]**, **[open]**.
+
+---
+
+## §1 Introduction
+
+> **Author's voice — scaffolding only.** The guide reserves this section. What follows is the
+> *technical* opening move, which is argument rather than voice; the motivational paragraph is left
+> as a prompt.
+
+**The hook the draft is missing.** [interpretation] The paper currently opens with a survey of who
+used the term and how. It would open far better with two systems that are both routinely called
+world models and that fail *opposite* tests.
+
+Take a high-fidelity video predictor. Given a history of frames it produces the next frames
+accurately; it is, in a perfectly reasonable sense, predictively closed at the level of observations.
+Now ask it which of two available actions leads to a better outcome. It has nothing to say — not
+because it predicts badly, but because nothing in its training made the decision-relevant
+distinctions survive.
+
+Now take MuZero. Its latent dynamics do not reconstruct the environment; they are demonstrably
+inaccurate when asked to evaluate policies outside the region the search prior visits. By any
+predictive-closure standard it is a poor model of its environment. It also plans at superhuman level.
+
+A binary predicate must either admit both systems or exclude both, and neither is right. The two
+systems are not at different points on one scale. They are at different *coordinates*: one is strong
+where the other is weak, and the two strengths are not comparable because they answer different
+questions. That observation is the entire motivation for a profile, and it takes one paragraph.
+
+> **Prompt for the author.** After that paragraph, one short paragraph on why the binary form
+> bothered you specifically — presumably from the MMALS side: you were not asking "is this a world
+> model?", you were asking whether a learner may discard part of its history. Say that in the first
+> person, briefly, and then drop it. Reviewers forgive one sentence of motivation; they do not
+> forgive three paragraphs.
+
+**Then the four questions**, which the draft already has and which are good — but they should be
+introduced as *the four things the two examples just came apart on*, not as a list arriving from
+nowhere. And the contribution list should be trimmed: five bullets is two too many. The three that
+survive scrutiny are the frontier formulation, the L2.G/L2.O split, and the bidirectional finite
+separations. The other two are corollaries.
+
+---
+
+## §2 Lineage and related work
+
+The draft's §2 reads as a bibliography with connective tissue. Rewritten, it should make three moves
+in order, because the third is the one that determines whether a referee thinks the paper is honest.
+
+**Move 1 — the idea is old, and the citation should be modest.** [imported] Craik's proposal that
+nervous systems carry internal models that parallel external events, and Conant and Ashby's
+regulator-model theorem, are the conceptual ancestry of every system in this literature. They are
+cited here as lineage and nothing more. The good-regulator theorem in particular is routinely
+over-cited: it holds under specific assumptions about the regulator's information and the optimality
+criterion, and it does not license the general claim that any competent controller contains a model
+of what it controls. Saying that explicitly costs one sentence and buys a great deal of credibility,
+because a referee who knows the theorem is already suspicious by the time it appears.
+
+**Move 2 — the formal machinery already exists, in three distinct traditions.** [imported] Classical
+state abstraction asks when two states may be merged: Givan, Dean and Greig formalised stochastic
+bisimulation and model minimisation, Ferns, Panangaden and Precup replaced the equivalence with a
+metric and bounded value differences by it, and Li, Walsh and Littman organised the resulting notions
+into a taxonomy running from model-irrelevance through value-, action- and policy-irrelevance.
+Approximate information states ask the same question from the history side and, crucially, attach
+*guarantees*: a compression that approximately preserves one-step reward and next-statistic
+prediction supports an approximate dynamic program with an explicit error recursion. Value
+equivalence asks it from the model side: a model is adequate if it induces the same Bellman updates
+over declared policy and value-function classes.
+
+**Move 3 — state the boundary before the reader does.** [interpretation] Nothing in L0 is a new
+theory of state abstraction. L0's closest classical relative is a reward-free, model-level
+abstraction claim, augmented by an explicitly declared query family. Toy A is close to the textbook
+observation that an abstraction preserving the transition structure need not preserve `Q*` once
+rewards are reintroduced; Toy B is a noisy-TV example. The paper claims neither phenomenon as new.
+
+What it claims is narrower and should be stated in exactly these terms: **these three traditions are
+never reported together, so a claim established in one register is routinely read in another.** A
+system demonstrated to be value-equivalent on a narrow class gets described as "having a world
+model"; a video model demonstrated to be closed at the observation level gets described the same
+way; and the two descriptions are then compared as though they were commensurable. The contribution
+on offer is a reporting discipline, not a theorem. A paper that says this plainly in §2 is much
+harder to reject than one that leaves the reader to discover it in §6.
+
+---
+
+## §3 The profile
+
+This is the section that most needs prose. The pattern to apply to every quantity is the same four
+beats: **what it measures, what defect it catches, what it structurally cannot catch, and why this
+form rather than the obvious alternative.** The draft currently supplies the first beat only.
+
+### 3.1 Aliasing floor and kernel fit
+
+[proposal] `δ_alias` and `δ_fit` answer two different questions that are easy to conflate. `δ_alias`
+asks whether the *compression* is dynamically coherent: if σ merges two histories, do those histories
+actually behave the same way once projected? `δ_fit` asks whether the *learned operator* is right
+given that compression. The first is a property of σ alone; the second is a property of `K` given σ.
+
+The draft states the relation
+`δ_alias ≤ 2 δ_fit`, `δ_alias/2 ≤ inf_K δ_fit(K) ≤ δ_alias`
+and calls it an elementary triangle-inequality consequence, which it is. What it does not say is what
+that relation *means for reporting*, and this is the paragraph the reader needs:
+
+[interpretation] Under the supremum form given here, the two quantities are not independent. If
+`δ_fit = 0` then `δ_alias = 0` necessarily, so a reader may reasonably ask why both are reported. The
+answer is that no model is ever trained against a supremum. Training minimises an average, and
+against an averaged fit loss the two quantities come apart sharply: a kernel can match the *mean*
+next-latent law inside a cell while the histories inside that cell disagree violently with each other
+and with the mean. `δ_alias` is then the floor that no further training can remove — it is what the
+compression has already destroyed — while `δ_fit` is where the model currently sits. The gap between
+them is exactly what more optimisation can still buy. That is the operational reading, and it should
+be stated, because it converts an inequality into a diagnostic.
+
+[interpretation] The limitation must be stated in the same breath. Both `P_σ(·|h,a)` and `K(·|σ(h),a)`
+are pushed through σ on both sides of the comparison. Any distinction σ destroys is therefore
+invisible to `δ_alias`, `δ_fit` and `δ_roll` **by construction** — these are self-referential criteria,
+and no amount of measuring them can reveal what the representation threw away. The only quantity in
+L0 with an external anchor is the query-retention term `η_q`, which requires oracle access to `q(S)`.
+This is not a defect to be hidden; it is precisely why L0 is formulated as a frontier over declared
+query families rather than as an absolute closure claim, and saying so here makes §3.3 land instead
+of arriving unmotivated.
+
+### 3.2 Conditional rollout closure
+
+[proposal] The important word in `δ_roll(k)` is *conditional*, and the draft asserts its importance
+without demonstrating it. One sentence fixes this: a model that ignores its starting state entirely
+but reproduces the environment's long-run distribution has zero *marginal* rollout error and produces
+rollouts that are useless for planning, because every rollout claim is a claim about where you end up
+**from here, under this action sequence**. Marginal agreement is compatible with total conditional
+disagreement. That is why the comparison is conditioned on the starting history and the action
+sequence, and it is worth the sentence.
+
+[proposal] The case-count requirement deserves its own short paragraph rather than a clause. In any
+environment with termination, longer horizons can have no admissible cases at all: every history
+relevant to the query has already terminated before step `k`. A supremum over an empty set is not a
+zero-error pass, and reporting it as `0` alongside genuine zeros is actively misleading. Toy A
+exhibits exactly this — see §4.1 — and the paper should use its own toy as the illustration rather
+than stating the rule abstractly.
+
+### 3.3 Query retention and why `k = 0` is mandatory
+
+[proposal] `η_q(k)` measures whether the declared queries survive. The draft says the `k = 0` term is
+essential and does not say why, which is a shame because the reason is the cleanest idea in the
+section:
+
+**retention along a rollout is not the same thing as decodability now.** A representation can
+correctly forecast the *distribution* of a query at every future step while being unable to say what
+that query's value is at the present step. Forecasting a marginal is a weaker demand than decoding a
+value, and without the `k = 0` term a representation that has destroyed a distinction can still post
+clean retention numbers, because from a vantage point before the distinction was revealed the correct
+forecast is the uninformative one.
+
+[finite] Toy A shows the whole pattern in three numbers, and the draft should walk through them
+rather than tabulating them. At the phase level, `η_{q_phase}(k) = 0` for every admissible `k`. At the
+richer level including the mode query, `η_{q_mode}(0) = η_{q_mode}(1) = 1` under the L1-TV convention:
+the coarse latent cannot decode the mode at the revealed histories, either now or one step out. At
+`k = 2` the number is `0` — but not because decodability was recovered. The revealed histories have
+terminated, so the case set no longer contains them, and the surviving path starts before the probe,
+where the uninformative forecast is the correct one. That single line is a better argument for both
+the `k = 0` term and the case-count rule than any amount of abstract statement.
+
+### 3.4 The abstraction frontier
+
+[proposal] This is the paper's main structural proposal and it currently receives four lines. It
+should receive a full subsection, because it is also the strongest answer the paper has to the
+eliminativist objection in §6.
+
+The argument runs: an L0 claim is always relative to a declared 𝔸, and a sufficiently impoverished 𝔸
+makes the claim automatic. In Toy A, declaring 𝔸 = {q_phase} over a deterministic protocol means the
+pass follows from the protocol's structure and not from anything the representation achieved. Reported
+as a point — "σ_C passes L0" — the statement is nearly empty. Reported as a frontier — "passes at
+phase, fails at phase+mode, and the query that separates them is exactly the one the decision needs"
+— it becomes informative.
+
+So the reportable object is a pair: the finest tested level 𝔸* at which the declared budgets hold,
+together with a natural richer level at which they fail. The second half is doing specific work and
+should be named as such: it is a **non-vacuity certificate**, evidence that the test could have
+failed. A pass with no exhibited failure is not a pass; it is an undeclared choice of 𝔸.
+
+[open] "Natural richer level" needs a criterion, and the draft does not supply one. A defensible
+minimum: the added query must be (i) decodable from the true state, and (ii) one a reader would
+independently expect a system described as a world model at this level to preserve. In Toy A,
+`q_mode` qualifies on both counts — it is literally what the environment reveals when probed. This is
+still a judgement call, and the paper should admit that rather than pretend the criterion is formal.
+It is nonetheless a great deal better than leaving 𝔸 undeclared.
+
+### 3.5 Policy exposure `ρ_pol`, and why it is a diagnostic and not a layer
+
+[interpretation] The draft records the outcome — behaviour-policy invariance was demoted from a layer
+to an attribution ratio — but hides the argument that forced it. That argument is two lines long and
+is the most instructive event in the framework's history. It should be shown.
+
+[finite] Inside a latent cell, the projected kernel induced by a behaviour policy β is a *mixture*
+over the projected laws of the member histories, with weights given by β's conditional distribution
+over those histories. Two behaviour policies therefore produce two mixtures over the *same* member
+laws. Their weight difference sums to zero, so it decomposes into transports between pairs of
+components, giving
+
+```
+d_F(K_β^σ, K_β'^σ)  ≤  ½‖w^β − w^β'‖₁ · max_{i,j} d_F(μ_i, μ_j)  ≤  ½‖w^β − w^β'‖₁ · δ_alias
+```
+
+and hence
+
+```
+ρ_pol  ≤  ½‖w^β − w^β'‖₁  ≤  1.
+```
+
+The draft states only `0 ≤ δ_inv^latent ≤ δ_alias`. The sharper form is worth stating because it
+carries the interpretation directly: **no change of acquisition policy can create a compression
+defect; it can only expose some fraction of a defect σ already has, and the fraction it can expose is
+capped by the weight spread the behaviour class can achieve.** Once that sentence is on the page, the
+demotion is obvious rather than merely announced, and the reader understands why an apparently
+independent question turned out to live inside L0.
+
+*(This sharper bound is offered as an elementary observation, not a claim. The rewrite guide's
+mandatory prior-statement search applies to it as it does to the weaker form — mixture bounds of this
+shape are standard in the probability-metric and aggregation literature and a prior statement is
+likely.)*
+
+### 3.6 `L1_int`: why action-conditioning is not intervention
+
+[proposal] The draft asserts the distinction and gives the collapse condition. The missing piece is
+the mechanism, which is one paragraph:
+
+`K(·|z,a)` is estimated from data in which the action `a` was *chosen* by something. If whatever
+chose i
