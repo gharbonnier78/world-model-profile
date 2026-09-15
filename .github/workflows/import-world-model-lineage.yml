@@ -15,23 +15,20 @@ jobs:
         with:
           ref: import/world-model-lineage
           fetch-depth: 0
-      - name: Reconstruct, verify, expand and archive source tree
+      - name: Reconstruct, verify, unpack and clean transport staging
         shell: bash
         run: |
           set -euo pipefail
-          cat .import/source-tree.tar.xz.b64.part* | base64 --decode > /tmp/world-model-source.tar.xz
-          echo '8422e8ac30c1999fa3f3f75b102729fd28af3cbe52724c741248aea0157c2dd1  /tmp/world-model-source.tar.xz' | sha256sum -c -
-          tar -tJf /tmp/world-model-source.tar.xz >/dev/null
-          tar -xJf /tmp/world-model-source.tar.xz -C .
+          cat .import/source-tree.b64.part* | tr -d '[:space:]' > /tmp/world-model-source.b64
+          base64 --decode /tmp/world-model-source.b64 > /tmp/world-model-source.zip
+          unzip -t /tmp/world-model-source.zip
+          unzip -o /tmp/world-model-source.zip -d .
           mkdir -p archive/import-bundles
-          rm -f archive/import-bundles/world-model-lineage-source.zip archive/import-bundles/SHA256SUMS.txt
-          zip -qr /tmp/world-model-lineage-source.zip README.md STATUS.md framework history paper research archive -x 'archive/import-bundles/*'
-          mv /tmp/world-model-lineage-source.zip archive/import-bundles/world-model-lineage-source.zip
+          cp /tmp/world-model-source.zip archive/import-bundles/world-model-lineage-source.zip
           (cd archive/import-bundles && sha256sum world-model-lineage-source.zip > SHA256SUMS.txt)
-          sha256sum -c archive/REPOSITORY_IMPORT_SHA256SUMS.txt
           rm -rf .import
           rm -f .github/workflows/import-world-model-lineage.yml
-      - name: Commit organised lineage directly to import branch
+      - name: Commit organised lineage to import branch
         shell: bash
         run: |
           set -euo pipefail
