@@ -1,0 +1,6 @@
+PDF: /mnt/data/world_model_arxiv_draft_v0_5/world_model_profile_arxiv_draft_v0_5.pdf
+Pages: 14
+Encrypted: False
+Openable (PyMuPDF): True
+Likely scanned: False
+XFA present: False
