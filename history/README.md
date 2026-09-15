@@ -1,12 +1,16 @@
 # Definition / Review Lineage
 
-This directory is reserved for the complete evolution of the world-model working definition and layered profile.
+This directory preserves the evolution of the world-model working definition, layered profile, and post-publication research transitions.
 
-Planned lineage:
+Framework lineage:
 
 - `v0.1/` — initial working definition and first independent review cycle;
 - `v0.2/` — first corrected L0–L3 formalisation and finite separation;
 - `v0.3/` — executable repair, abstraction frontier, and bidirectional L0/L2 separation;
 - accepted v0.4 is kept separately under `framework/accepted-v0.4/` and is frozen.
 
-The repository currently exposes the accepted v0.4 formal spine and acceptance review first. Historical text sources and exact reviewer bundles are being preserved as provenance artifacts rather than rewritten into the accepted spine.
+Post-publication chronicle:
+
+- `2026-09-15_toy_c_state_sufficiency_chronicle.md` — records the transition from the published v0.6 milestone to Toy C v0.1/v0.2, including the nontrivial predictive quotient, the weakening of a strong persistent-recursive-state hypothesis, and the link back to MMALS Minimal Sufficient Dynamic Inference.
+
+The accepted spine is never rewritten to absorb later exploratory ideas. New hypotheses remain in research/chronicle artifacts until a separate formal review cycle is explicitly opened.
