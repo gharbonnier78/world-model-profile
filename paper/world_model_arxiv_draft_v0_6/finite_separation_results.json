@@ -1,0 +1,113 @@
+{
+  "metric_convention": "TV/IPM uses L1 convention sum|p-q|; halve for half-normalised TV",
+  "toy_A_L0_pass_L2_fail": {
+    "L0_phase_frontier": {
+      "delta_alias": {"error": 0.0, "case_count": 2, "status": "PASS"},
+      "delta_fit": {"error": 0.0, "case_count": 7, "status": "PASS"},
+      "delta_roll": {
+        "1": {"error": 0.0, "case_count": 7, "status": "PASS"},
+        "2": {"error": 0.0, "case_count": 2, "status": "PASS"},
+        "3": {"error": null, "case_count": 0, "status": "NOT_APPLICABLE"}
+      },
+      "eta_q_phase": {
+        "0": {"error": 0.0, "case_count": 3, "query_bearing_case_count": 3, "status": "PASS"},
+        "1": {"error": 0.0, "case_count": 7, "query_bearing_case_count": 7, "status": "PASS"},
+        "2": {"error": 0.0, "case_count": 2, "query_bearing_case_count": 2, "status": "PASS"},
+        "3": {"error": null, "case_count": 0, "query_bearing_case_count": 0, "status": "NOT_APPLICABLE", "interpretation": "empty admissible case set"}
+      },
+      "eta_q_mode_if_added": {
+        "0": {"error": 1.0, "case_count": 3, "query_bearing_case_count": 2, "status": "FAIL"},
+        "1": {"error": 1.0, "case_count": 7, "query_bearing_case_count": 4, "status": "FAIL"},
+        "2": {"error": 0.0, "case_count": 2, "query_bearing_case_count": 0, "status": "NOT_INFORMATIVE", "interpretation": "no mode-resolving starting history remains; do not read the zero as improved decodability"},
+        "3": {"error": null, "case_count": 0, "query_bearing_case_count": 0, "status": "NOT_APPLICABLE", "interpretation": "empty admissible case set"}
+      },
+      "frontier_statement": "A_phase passes; A_phase+mode fails at k=0 and k=1. k>=2 is not used to infer recovery when mode-bearing histories have left the case set."
+    },
+    "L2_contingent": {
+      "history_policies_enumerated": 12,
+      "coarse_policies_enumerated": 6,
+      "point_c_0.10": {"c": 0.1, "V_history": 0.9, "V_coarse": 0.5, "regret": 0.4, "analytic_regret": 0.4},
+      "grid_mismatches": [],
+      "AP1_reward_error_u": 0.0,
+      "AP1_reward_error_r": 0.5,
+      "AIS_alpha_1_diagnostic": 0.5,
+      "AIS_policy_bound_2alpha_diagnostic": 1.0,
+      "certification": "L2 failure is certified directly by positive regret rather than inferred from failure of an AIS sufficient-condition bound."
+    },
+    "grid": [
+      {"c": 0.0, "V_history": 1.0, "V_coarse": 0.5, "regret": 0.5, "analytic_regret": 0.5},
+      {"c": 0.01, "V_history": 0.99, "V_coarse": 0.5, "regret": 0.49, "analytic_regret": 0.49},
+      {"c": 0.02, "V_history": 0.98, "V_coarse": 0.5, "regret": 0.48, "analytic_regret": 0.48},
+      {"c": 0.03, "V_history": 0.97, "V_coarse": 0.5, "regret": 0.47, "analytic_regret": 0.47},
+      {"c": 0.04, "V_history": 0.96, "V_coarse": 0.5, "regret": 0.45999999999999996, "analytic_regret": 0.46},
+      {"c": 0.05, "V_history": 0.95, "V_coarse": 0.5, "regret": 0.44999999999999996, "analytic_regret": 0.45},
+      {"c": 0.06, "V_history": 0.94, "V_coarse": 0.5, "regret": 0.43999999999999995, "analytic_regret": 0.44},
+      {"c": 0.07, "V_history": 0.9299999999999999, "V_coarse": 0.5, "regret": 0.42999999999999994, "analytic_regret": 0.43},
+      {"c": 0.08, "V_history": 0.92, "V_coarse": 0.5, "regret": 0.42000000000000004, "analytic_regret": 0.42},
+      {"c": 0.09, "V_history": 0.91, "V_coarse": 0.5, "regret": 0.41000000000000003, "analytic_regret": 0.41000000000000003},
+      {"c": 0.1, "V_history": 0.9, "V_coarse": 0.5, "regret": 0.4, "analytic_regret": 0.4},
+      {"c": 0.11, "V_history": 0.89, "V_coarse": 0.5, "regret": 0.39, "analytic_regret": 0.39},
+      {"c": 0.12, "V_history": 0.88, "V_coarse": 0.5, "regret": 0.38, "analytic_regret": 0.38},
+      {"c": 0.13, "V_history": 0.87, "V_coarse": 0.5, "regret": 0.37, "analytic_regret": 0.37},
+      {"c": 0.14, "V_history": 0.86, "V_coarse": 0.5, "regret": 0.36, "analytic_regret": 0.36},
+      {"c": 0.15, "V_history": 0.85, "V_coarse": 0.5, "regret": 0.35, "analytic_regret": 0.35},
+      {"c": 0.16, "V_history": 0.84, "V_coarse": 0.5, "regret": 0.33999999999999997, "analytic_regret": 0.33999999999999997},
+      {"c": 0.17, "V_history": 0.83, "V_coarse": 0.5, "regret": 0.32999999999999996, "analytic_regret": 0.32999999999999996},
+      {"c": 0.18, "V_history": 0.8200000000000001, "V_coarse": 0.5, "regret": 0.32000000000000006, "analytic_regret": 0.32},
+      {"c": 0.19, "V_history": 0.81, "V_coarse": 0.5, "regret": 0.31000000000000005, "analytic_regret": 0.31},
+      {"c": 0.2, "V_history": 0.8, "V_coarse": 0.5, "regret": 0.30000000000000004, "analytic_regret": 0.3},
+      {"c": 0.21, "V_history": 0.79, "V_coarse": 0.5, "regret": 0.29000000000000004, "analytic_regret": 0.29000000000000004},
+      {"c": 0.22, "V_history": 0.78, "V_coarse": 0.5, "regret": 0.28, "analytic_regret": 0.28},
+      {"c": 0.23, "V_history": 0.77, "V_coarse": 0.5, "regret": 0.27, "analytic_regret": 0.27},
+      {"c": 0.24, "V_history": 0.76, "V_coarse": 0.5, "regret": 0.26, "analytic_regret": 0.26},
+      {"c": 0.25, "V_history": 0.75, "V_coarse": 0.5, "regret": 0.25, "analytic_regret": 0.25},
+      {"c": 0.26, "V_history": 0.74, "V_coarse": 0.5, "regret": 0.24, "analytic_regret": 0.24},
+      {"c": 0.27, "V_history": 0.73, "V_coarse": 0.5, "regret": 0.22999999999999998, "analytic_regret": 0.22999999999999998},
+      {"c": 0.28, "V_history": 0.72, "V_coarse": 0.5, "regret": 0.21999999999999997, "analytic_regret": 0.21999999999999997},
+      {"c": 0.29, "V_history": 0.71, "V_coarse": 0.5, "regret": 0.20999999999999996, "analytic_regret": 0.21000000000000002},
+      {"c": 0.3, "V_history": 0.7, "V_coarse": 0.5, "regret": 0.19999999999999996, "analytic_regret": 0.2},
+      {"c": 0.31, "V_history": 0.69, "V_coarse": 0.5, "regret": 0.18999999999999995, "analytic_regret": 0.19},
+      {"c": 0.32, "V_history": 0.6799999999999999, "V_coarse": 0.5, "regret": 0.17999999999999994, "analytic_regret": 0.18},
+      {"c": 0.33, "V_history": 0.6699999999999999, "V_coarse": 0.5, "regret": 0.16999999999999993, "analytic_regret": 0.16999999999999998},
+      {"c": 0.34, "V_history": 0.6599999999999999, "V_coarse": 0.5, "regret": 0.15999999999999992, "analytic_regret": 0.15999999999999998},
+      {"c": 0.35, "V_history": 0.65, "V_coarse": 0.5, "regret": 0.15000000000000002, "analytic_regret": 0.15000000000000002},
+      {"c": 0.36, "V_history": 0.64, "V_coarse": 0.5, "regret": 0.14, "analytic_regret": 0.14},
+      {"c": 0.37, "V_history": 0.63, "V_coarse": 0.5, "regret": 0.13, "analytic_regret": 0.13},
+      {"c": 0.38, "V_history": 0.62, "V_coarse": 0.5, "regret": 0.12, "analytic_regret": 0.12},
+      {"c": 0.39, "V_history": 0.61, "V_coarse": 0.5, "regret": 0.10999999999999999, "analytic_regret": 0.10999999999999999},
+      {"c": 0.4, "V_history": 0.6, "V_coarse": 0.5, "regret": 0.09999999999999998, "analytic_regret": 0.09999999999999998},
+      {"c": 0.41, "V_history": 0.5900000000000001, "V_coarse": 0.5, "regret": 0.09000000000000008, "analytic_regret": 0.09000000000000002},
+      {"c": 0.42, "V_history": 0.5800000000000001, "V_coarse": 0.5, "regret": 0.08000000000000007, "analytic_regret": 0.08000000000000002},
+      {"c": 0.43, "V_history": 0.5700000000000001, "V_coarse": 0.5, "regret": 0.07000000000000006, "analytic_regret": 0.07},
+      {"c": 0.44, "V_history": 0.56, "V_coarse": 0.5, "regret": 0.06000000000000005, "analytic_regret": 0.06},
+      {"c": 0.45, "V_history": 0.55, "V_coarse": 0.5, "regret": 0.050000000000000044, "analytic_regret": 0.04999999999999999},
+      {"c": 0.46, "V_history": 0.54, "V_coarse": 0.5, "regret": 0.040000000000000036, "analytic_regret": 0.03999999999999998},
+      {"c": 0.47, "V_history": 0.53, "V_coarse": 0.5, "regret": 0.030000000000000027, "analytic_regret": 0.030000000000000027},
+      {"c": 0.48, "V_history": 0.52, "V_coarse": 0.5, "regret": 0.020000000000000018, "analytic_regret": 0.020000000000000018},
+      {"c": 0.49, "V_history": 0.51, "V_coarse": 0.5, "regret": 0.010000000000000009, "analytic_regret": 0.010000000000000009},
+      {"c": 0.5, "V_history": 0.5, "V_coarse": 0.5, "regret": 0.0, "analytic_regret": 0.0},
+      {"c": 0.51, "V_history": 0.5, "V_coarse": 0.5, "regret": 0.0, "analytic_regret": 0.0},
+      {"c": 0.52, "V_history": 0.5, "V_coarse": 0.5, "regret": 0.0, "analytic_regret": 0.0},
+      {"c": 0.53, "V_history": 0.5, "V_coarse": 0.5, "regret": 0.0, "analytic_regret": 0.0},
+      {"c": 0.54, "V_history": 0.5, "V_coarse": 0.5, "regret": 0.0, "analytic_regret": 0.0},
+      {"c": 0.55, "V_history": 0.5, "V_coarse": 0.5, "regret": 0.0, "analytic_regret": 0.0},
+      {"c": 0.56, "V_history": 0.5, "V_coarse": 0.5, "regret": 0.0, "analytic_regret": 0.0},
+      {"c": 0.57, "V_history": 0.5, "V_coarse": 0.5, "regret": 0.0, "analytic_regret": 0.0},
+      {"c": 0.58, "V_history": 0.5, "V_coarse": 0.5, "regret": 0.0, "analytic_regret": 0.0},
+      {"c": 0.59, "V_history": 0.5, "V_coarse": 0.5, "regret": 0.0, "analytic_regret": 0.0},
+      {"c": 0.6, "V_history": 0.5, "V_coarse": 0.5, "regret": 0.0, "analytic_regret": 0.0}
+    ]
+  },
+  "toy_B_L2_pass_L0_fail": {
+    "L0": {"delta_fit_full_state": 1.5, "x_only_pushforward_error": 0.0, "status": "FAIL for any budget < 1.5 under L1-TV"},
+    "L2_G_VE": {"declared_value_class": "V_x={V:V(x,n)=v(x)}", "policies_enumerated": 256, "basis_functions_checked": 2, "max_bellman_gap": 0.0, "status": "PASS exactly"}
+  },
+  "policy_exposure_attribution": {
+    "delta_alias": 2.0,
+    "restricted_B": {"mixture_weights": [0.25, 0.75], "delta_inv_latent": 1.0, "rho_pol": 0.5},
+    "rich_B": {"mixture_weights": [0.0, 1.0], "delta_inv_latent": 2.0, "rho_pol": 1.0},
+    "bound_checked": "0 <= delta_inv_latent <= delta_alias; rho_pol is defined only when delta_alias>0",
+    "interpretation": "rho_pol is an attribution ratio for how much existing L0 aliasing can be exposed by the declared behaviour-policy class; it is not an independent world-model axis."
+  },
+  "scope": "Finite toys establish L0/L2 non-identity. They do not establish non-collinearity in a non-degenerate regime."
+}
