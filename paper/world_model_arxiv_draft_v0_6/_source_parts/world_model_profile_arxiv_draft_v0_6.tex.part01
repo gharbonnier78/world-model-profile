@@ -1,0 +1,301 @@
+fine the true projected one-step law
+\[
+P_\sigma(\cdot\mid h,a)
+=
+\mathrm{Law}\!\left(\sigma(H_{t+1})\mid H_t=h,A_t=a\right)
+\]
+and a candidate latent transition kernel $K(\cdot\mid z,a)$.
+
+\paragraph{Aliasing floor and kernel fit.}
+Two failures are easy to conflate. The first belongs to the compression: if $\sigma$ merges two histories, do their projected successor laws actually agree? The second belongs to the learned operator: given that compression, does $K$ reproduce those projected laws?
+
+For histories collapsed to the same latent,
+\[
+\delta_{\rm alias}
+=
+\sup_{\substack{h,h'\in\Omega_0\\\sigma(h)=\sigma(h')}}
+\sup_a
+\dF\!\left(P_\sigma(\cdot\mid h,a),P_\sigma(\cdot\mid h',a)\right).
+\]
+The associated worst-case fit is
+\[
+\delta_{\rm fit}
+=
+\sup_{h\in\Omega_0}\sup_a
+\dF\!\left(K(\cdot\mid\sigma(h),a),P_\sigma(\cdot\mid h,a)\right).
+\]
+For the sup/IPM form,
+\[
+\delta_{\rm alias}\le 2\delta_{\rm fit},
+\qquad
+\frac{\delta_{\rm alias}}2
+\le \inf_K\delta_{\rm fit}(K)
+\le \delta_{\rm alias}.
+\]
+We treat this as an elementary triangle-inequality consequence, not as a novelty claim. Under these worst-case definitions, the two quantities are linked: $\delta_{\rm fit}=0$ forces $\delta_{\rm alias}=0$. Their practical separation is clearest when model training reports an \emph{averaged} fit loss. A kernel can fit the average next-latent law in a cell while the histories inside that cell disagree strongly. $\delta_{\rm alias}$ then identifies disagreement caused by the quotient itself rather than by insufficient optimisation.
+
+There is an equally important limitation. $P_\sigma$ and $K$ are compared after projection through $\sigma$ on both sides. A distinction erased by $\sigma$ is absent from both laws and can therefore be invisible to $\delta_{\rm alias}$, $\delta_{\rm fit}$ and $\delta_{\rm roll}$. These quantities measure internal coherence of the projected dynamics, not the external adequacy of what was retained. The query-retention term below supplies that external reference.
+
+\paragraph{Conditional rollout closure.}
+For legal action sequence $a_{t:t+k-1}$,
+\[
+\delta_{\rm roll}(k)
+=
+\sup
+\dF\!\left(
+K^k(\cdot\mid\sigma(h),a_{t:t+k-1}),
+P_\sigma^k(\cdot\mid h,a_{t:t+k-1})
+\right).
+\]
+The word \emph{conditional} is load-bearing. A model could ignore its starting state yet match an unconditional long-run marginal, while being useless for the planning question ``where do I end up from here under these actions?'' Hence the comparison is conditioned on the starting history and action sequence. Each horizon-indexed report also carries an admissible case count: termination can remove every relevant continuation at a later horizon, and an empty case set is \NA, not a zero-error success.
+
+\paragraph{Query retention and external reference.}
+For each declared query $q\in\Aabs$,
+\[
+\eta_q(k)
+=
+\inf_{g_q}\sup
+ d_q\!\left(
+\mathrm{Law}(g_q(\hat Z_{t+k})),
+\mathrm{Law}(q(S_{t+k})\mid h,a_{t:t+k-1})
+\right),
+\qquad 0\le k\le H_{\Aabs}.
+\]
+Unlike the projected-dynamics quantities, $\eta_q$ is anchored to something the model did not generate: the declared external query $q(S)$. The price is labelled, oracle, or otherwise justified access to that reference. The $k=0$ term is essential because reproducing a future distribution is weaker than decoding the property now. A representation may forecast the correct marginal of a query while having erased which value is currently true.
+
+Toy A below exposes both issues. At the phase abstraction the projected process is exact. When the mode query is added, $\eta_{q_{\rm mode}}(0)=\eta_{q_{\rm mode}}(1)=1$ under the L1-TV convention. At $k=2$ the raw error becomes zero only because the mode-bearing revealed histories have terminated; the report therefore includes query-bearing case counts and marks that horizon as non-informative rather than as recovered decodability.
+
+\paragraph{The abstraction frontier.}
+An L0 statement is therefore not simply ``the system passes L0''. It reports
+\[
+\Aabs^*=\text{finest tested abstraction level at which the declared budgets pass},
+\]
+paired, where possible, with a natural richer level that fails. For a frontier-style claim, a pass without a tested richer level or another non-vacuity certificate is incomplete: it shows that the chosen $\Aabs$ was easy enough, but not where the representation stops being adequate. Toy A's useful statement is thus ``phase passes; phase+mode fails; the separating query is the one later required by the decision'', not merely ``L0 passes''.
+
+\subsection{Policy exposure as an L0 attribution diagnostic}
+
+A change of acquisition policy can alter which full histories are mixed inside one latent cell. It cannot create a compression defect that the cell does not already contain.
+
+For behaviour policy $\beta$, define
+\[
+K_\beta^\sigma(\cdot\mid z,a)
+=
+\int P_\sigma(\cdot\mid h,a)\,dP_\beta(h\mid z,a).
+\]
+The behaviour-induced discrepancy is evaluated only where both behaviour policies support the same latent--action pair:
+\[
+\delta_{\rm inv}^{\rm latent}
+=
+\sup_{\beta,\beta'\in\mathcal B}
+\sup_{(z,a)\in \mathrm{supp}_\beta(Z_t,A_t)\cap\mathrm{supp}_{\beta'}(Z_t,A_t)}
+\dF\!\left(
+K_\beta^\sigma(\cdot\mid z,a),
+K_{\beta'}^\sigma(\cdot\mid z,a)
+\right).
+\]
+Without this common-support condition, one of the two conditional kernels may be undefined at the point being compared. Let $w^\beta$ and $w^{\beta'}$ denote the corresponding mixture weights over the member histories of a fixed latent cell. An elementary mixture-diameter argument gives
+\[
+\dF\!\left(K_\beta^\sigma,K_{\beta'}^\sigma\right)
+\le
+\frac12\lVert w^\beta-w^{\beta'}\rVert_1\,\delta_{\rm alias}
+\le \delta_{\rm alias}.
+\]
+Consequently
+\[
+0\le \delta_{\rm inv}^{\rm latent}\le\delta_{\rm alias}.
+\]
+We make no novelty claim for this mixture bound; a dedicated prior-statement search remains a manuscript obligation.
+
+When $\delta_{\rm alias}>0$ and the behaviour class $\mathcal B$ is explicitly restricted, we report
+\[
+\rho_{\rm pol}
+=
+\frac{\delta_{\rm inv}^{\rm latent}}{\delta_{\rm alias}}
+\in[0,1].
+\]
+The interpretation is attribution, not another world-model axis: how much of an existing quotient defect can the declared acquisition class expose? A behaviour change that cannot place weight on the histories carrying the defect leaves it unobserved, not absent. A latent cell with only two member histories reduces $\rho_{\rm pol}$ to behaviour-weight spread; Sec.~\ref{sec:rho3} shows why cell geometry matters once three member laws are present.
+
+\subsection{$L1_{\rm int}$: interventional validity}
+
+Action conditioning records what happened when an action was \emph{chosen}; an interventional claim concerns what would happen if that action were \emph{set}. If the mechanism choosing the action has access to information not represented in the conditioning variables, the two laws can differ because of confounding rather than transition-model error.
+
+We therefore assert an abstract interventional quantity only when $\sigma$ is compatible with a declared causal abstraction or exact-transformation relation for intervention family $\mathcal I$~\cite{rubenstein2017,beckers2019}. When well posed,
+\[
+\delta_{\rm do}
+=
+\sup_{z,a}
+\dF\!\left(
+K(\cdot\mid z,a),
+\mathrm{Law}(\sigma(H_{t+1})\mid z_t=z,\mathrm{do}(A_t=a))
+\right).
+\]
+In an unconfounded online setting in which the agent action is the sole intervention point, the interventional law can coincide with ordinary action-conditioned transition fit. In that case the report should state that $L1_{\rm int}$ adds no independent information in the declared setting; \emph{not applicable} is reserved for cases in which the intervention question itself is outside scope. Additional empirical content arises with confounded offline data or interventions on variables beyond the agent action. This draft does not yet claim a dedicated empirical $L1_{\rm int}$ separation.
+
+\subsection{L2: global and operational decision adequacy}
+
+L2 is explicitly task-relative. Two established routes are useful but answer different questions. AIS asks whether a compressed history statistic approximately preserves reward and next-information-state predictions well enough to support approximate dynamic programming~\cite{subramanian2022}. VE instead asks whether the model preserves Bellman computations over declared policies and value functions~\cite{grimm2020,grimm2021,grimm2022}. We keep both because they quantify different objects.
+
+We further separate:
+\begin{itemize}
+    \item \textbf{L2.G}: adequacy over the declared class $(\mathcal T,H,\Pi,\pi_{\rm ref},\ldots)$;
+    \item \textbf{L2.O}: adequacy of the actual model--search pair under the planner-induced query distribution $\mu_\Pi$.
+\end{itemize}
+The distinction matters because $\mu_\Pi$ need not be exogenous. A planner steered by the model's own scores can avoid regions the model calls unpromising, including regions it calls unpromising because it is wrong there. Error measured only under $\mu_\Pi$ can therefore partly measure the system's own avoidance behaviour: the model influences where it is examined, and it is examined where it appears accurate. This is the failure mode motivating the L2.G/L2.O split~\cite{he2024}.
+
+Operational evaluation must additionally report either
+\[
+E_{\rm off}^*=\sup_{\nu\in\mathcal N}E_\nu[\ell]
+\]
+or a declared coverage/concentrability coefficient such as
+\[
+C(\nu\Vert\mu_\Pi)=\sup_{z,a}\frac{\nu(z,a)}{\mu_\Pi(z,a)}.
+\]
+A single convenient off-prior distribution is not enough, because it is selected by the same evaluator reporting the result. Either the family itself must be declared or the coverage coefficient must make the gap visible.
+
+\subsection{L3: robustness under declared shift}
+
+L3 is system-level:
+\[
+\sup_{\delta\in\Delta}
+\mathrm{Regret}_\delta(\pi;\pi_{\rm ref})\le\rho.
+\]
+A low system-level regret does not license a claim that one latent transition kernel is robust. Online adaptation can compensate for it; memory can identify the regime; replanning can correct a poor prediction at query time; or another component can mask the internal failure. L3 therefore records a property of the system under $\Delta$, not of any one module.
+
+Causal-robustness results such as Richens and Everitt's must also be imported with their explicit intervention scope and extractability interpretation~\cite{richens2024}. Their result concerns robustness to specified local interventions on all environment variables under theorem assumptions and extractable causal structure; it is not a blanket claim that every robust system explicitly stores a causal model.
+
+\section{Exact finite evidence}
+
+\subsection{Toy A: predictive closure at a coarse frontier, contingent decision failure}
+
+Let hidden mode $M\in\{0,1\}$ be uniform. Before termination, the agent is in an unrevealed phase $u$ or a revealed phase $r$. At $u$ it may choose \texttt{commit0}, \texttt{commit1}, or \texttt{probe}. A probe costs $c$ and reveals $M$ perfectly; at $r$ the agent then commits. A correct commit yields reward 1 and an incorrect commit reward 0.
+
+Consider the coarse representation
+\[
+\sigma_C(h)=\text{phase}(h),
+\]
+which deliberately merges the revealed histories for $M=0$ and $M=1$. The mechanism is simple: the hidden mode enters the reward but does not enter the projected phase dynamics. L0 is reward-free, so the phase quotient can be exactly closed even though it has erased the distinction that later determines which commitment is correct.
+
+At
+\[
+\Aabs_{\rm phase}=\{q_{\rm phase}\},
+\]
+exact enumeration gives
+\[
+\delta_{\rm alias}=\delta_{\rm fit}=\delta_{\rm roll}(1)=\delta_{\rm roll}(2)=0,
+\]
+and zero phase-query error on every informative horizon. Yet at the richer
+\[
+\Aabs'=\{q_{\rm phase},q_{\rm mode}\},
+\]
+mode-query error is 1 at $k=0$ and $k=1$ under the L1-TV convention. At $k=2$ the raw mode-query error is zero only because the revealed, mode-bearing histories have terminated; the query-bearing case count is zero and the horizon is reported as non-informative rather than as recovered decodability.
+
+The decision consequence is exact. Enumerating all 12 deterministic history-measurable policies and all 6 deterministic $\sigma_C$-measurable policies yields
+\[
+V^*_{\rm hist}(c)=\max(\tfrac12,1-c),
+\qquad
+V^*_C(c)=\tfrac12,
+\]
+so
+\[
+\mathrm{Regret}(c)=\max(0,\tfrac12-c).
+\]
+At $c=0.10$, the history-aware optimum is $0.90$, the best coarse-policy value is $0.50$, and regret is $0.40$.
+
+Without the probe, both immediate commitments are worth $1/2$ and the coarse representation is optimal: discarding an unknowable distinction costs nothing. The probe is load-bearing because it makes the mode acquirable. For $c<1/2$, the regret can therefore be read as the value of the discarded information net of its acquisition cost,
+\[
+\mathrm{Regret}(c)=\tfrac12-c.
+\]
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.79\linewidth]{fig_toy_a_regret.png}
+\caption{Toy A. Predictive closure at the phase abstraction is exact, while the information-gathering action makes the discarded mode decision-relevant. Positive L2 regret is certified directly by policy enumeration.}
+\label{fig:toya}
+\end{figure}
+
+This construction therefore establishes only
+\[
+L0(\Aabs_{\rm phase})\not\Rightarrow L2_{\rm contingent}.
+\]
+The certificate is direct positive regret, not failure of an AIS sufficient-condition bound. AIS AP1 error remains a diagnostic: because the hidden mode affects reward, the coarse statistic fails reward prediction at the revealed phase, but failure of a sufficient condition alone would not imply positive regret.
+
+\subsection{Toy B: exact decision equivalence despite predictive failure}
+
+Let state be $s=(x,n)$, where $x\in\{0,1\}$ is decision-relevant and $n\in\{0,1,2,3\}$ is nuisance noise. Actions \texttt{stay} and \texttt{flip} update $x$ deterministically. In the true model, $n'$ is uniform. An intentionally wrong model always predicts $n'=0$ while predicting the $x'$ dynamics exactly. Reward depends only on $x$.
+
+With identity representation and full abstraction
+\[
+\Aabs_{\rm full}=\{q_x,q_n\},
+\]
+the full-state transition error is
+\[
+\delta_{\rm fit}=1.5
+\]
+under the L1-TV convention, so L0 fails for any smaller budget.
+
+Now declare the value-function class
+\[
+\mathcal V_x=\{V:V(x,n)=v(x)\}.
+\]
+A Bellman update integrates the declared $V$ over the next-state distribution. If $V$ is constant in $n$, the $n'$ marginal disappears from that integral. Because the true and approximate models have identical $x'$ marginals and identical rewards, every Bellman update on $\mathcal V_x$ is therefore identical even though the approximate model is maximally wrong about the nuisance component. Exhaustive computation over all 256 deterministic stationary policies gives maximum Bellman gap zero.
+
+Thus
+\[
+L2.G\text{-VE}=\text{pass}
+\quad\text{while}\quad
+L0(\Aabs_{\rm full})=\text{fail}.
+\]
+The limitation follows from the same mechanism: value equivalence is a property of a model paired with a declared value class. Enlarge that class to include functions sensitive to $n$, and the equivalence need not survive. This is intentionally close to classical noisy-TV/state-abstraction examples; we claim no novelty for the phenomenon itself.
+
+\subsection{Why the two constructions form a pair}
+
+The two directions are possible because L0 and L2 quantify over different index sets. L0 asks what a declared query family $\Aabs$ survives under the representation and its projected dynamics. L2 asks what a declared reward, policy or value-function class requires for decision. Neither declaration automatically dominates the other. The finite constructions therefore establish
+\[
+L0\not\Rightarrow L2,
+\qquad
+L2.G\not\Rightarrow L0,
+\]
+under explicit declarations, but they do \emph{not} establish non-collinearity in a non-degenerate regime: Toy A uses a very coarse phase abstraction, and Toy B chooses a value class blind to nuisance by construction.
+
+\section{Illustrative diagnostics}
+
+The following examples illustrate two properties of the profile that are not established by the two finite non-implication constructions alone.
+
+\subsection{A three-history witness for $\rho_{\rm pol}$}
+\label{sec:rho3}
+
+With only two member laws in a latent cell, every behaviour-induced mixture lies on the line segment joining those laws. The distance between two mixtures is then forced to scale with the behaviour-weight displacement, so the ratio $\rho_{\rm pol}$ cannot demonstrate dependence on richer cell geometry.
+
+Consider instead three histories and the same two behaviour mixtures
+\[
+w=(0.5,0.5,0),
+\qquad
+w'=(0,0.5,0.5).
+\]
+Their half-L1 weight spread is $\tfrac12\lVert w-w'\rVert_1=0.5$. The mixture bound from Sec.~3 implies
+\[
+\rho_{\rm pol}\le \frac12\lVert w-w'\rVert_1=0.5.
+\]
+
+In geometry 1, let the projected laws be $(\delta_A,\delta_B,\delta_C)$. Then $\delta_{\rm alias}=2$, the two behaviour mixtures are at distance $1$, and
+\[
+\rho_{\rm pol}=0.5,
+\]
+so the bound is tight. In geometry 2, let the laws be
+\[
+\delta_A,\quad \delta_B,\quad 0.8\delta_A+0.2\delta_B.
+\]
+The same $\delta_{\rm alias}=2$ and the same behaviour-weight spread now produce mixture distance $0.2$ and
+\[
+\rho_{\rm pol}=0.1.
+\]
+The third law lies inside the convex hull of the first two, so a substantial weight displacement can move the induced mixture only slightly. The slack in the bound is therefore geometric: $\rho_{\rm pol}$ depends jointly on what behaviour weights are reachable and on how the member laws are arranged inside the aliased cell.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.66\linewidth]{fig_rho_three_history.png}
+\caption{Same declared behaviour-weight spread, different $\rho_{\rm pol}$ because the latent-cell law geometry differs. This illustrates attribution; it is not a novelty claim.}
+\label{fig:rho3}
+\end{figure}
+
+This construction isolates the first non-degenerate case in which $\rho_{\rm pol}$ can depend on latent-cell geometry rather than only on behaviour-weight spread. It does not elevate $\rho_{\r
