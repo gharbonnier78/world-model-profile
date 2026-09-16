@@ -12,5 +12,6 @@ Framework lineage:
 Post-publication chronicle:
 
 - `2026-09-15_toy_c_state_sufficiency_chronicle.md` — records the transition from the published v0.6 milestone through Toy C v0.1, v0.2 and v0.3: current-state sufficiency versus future-generating structure; nontrivial predictive quotient and query frontier; weakening of persistent-recursive-state necessity; model possession versus delegated access / finite compilation; explicit capability provenance and system-boundary dependence; and the bridge back to MMALS Minimal Sufficient Dynamic Inference.
+- `2026-09-16_toy_c_v0_4_typed_extension.md` — records the deliberately mechanical Toy C v0.4 falsification: a factorised task-query program that extends exactly to longer action horizons while failing newly conditioned history support and branch-conditioned evidence assimilation, showing that “extension/generalisation” must be declared by axis rather than as a scalar property.
 
 The accepted spine is never rewritten to absorb later exploratory ideas. New hypotheses remain in research/chronicle artifacts until a separate formal review cycle is explicitly opened.
