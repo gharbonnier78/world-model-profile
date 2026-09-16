@@ -1,0 +1,117 @@
+{
+  "toy": "Toy C v0.4",
+  "subtitle": "Typed extension: horizon generalisation without full generative closure",
+  "environment": "same finite POMDP as Toy C v0.2/v0.3",
+  "reachable_history_counts": {
+    "0": 4,
+    "1": 32,
+    "2": 256,
+    "3": 2048
+  },
+  "agent_H_factorised_query_program": {
+    "supported_conditioning_history_depth": "<=2",
+    "predictive_seed_entries": 292,
+    "seed": "q(h)=P(Y_next=1 | h, STAY)",
+    "future_action_rule": "return q for even FLIP parity, 1-q for odd FLIP parity",
+    "owns_declared_hidden_state_model": false,
+    "owns_declared_observation_update_rule": false,
+    "owns_declared_nuisance_model": false,
+    "uses_external_model_service": false,
+    "note": "H is intentionally a task-specific query program. The experiment does not assert whether such an object should or should not be called a model."
+  },
+  "baseline_D0": {
+    "history_depth": "<=2",
+    "future_action_lengths": [
+      1,
+      2,
+      3
+    ],
+    "queries": 4088,
+    "all_answers_equal": true,
+    "M_exact": "4088/4088",
+    "F_with_oracle_exact": "4088/4088",
+    "G_compiled_exact": "4088/4088",
+    "H_factorised_exact": "4088/4088",
+    "G_query_entries": 4088,
+    "H_seed_entries": 292,
+    "entry_count_factor_G_over_H": "14",
+    "complexity_caveat": "Entry counts are bookkeeping only; the rule/code description length of H is not included, so this is not a formal compression or MDL comparison."
+  },
+  "typed_extension": {
+    "future_horizon_extension": {
+      "conditioning_history_depth": "<=2",
+      "new_action_lengths": [
+        4,
+        5,
+        6
+      ],
+      "queries": 32704,
+      "M_exact": "32704/32704",
+      "F_with_oracle_exact": "32704/32704",
+      "G_defined": "0/32704",
+      "H_defined": "32704/32704",
+      "H_exact_when_defined": "32704/32704",
+      "interpretation": "H extrapolates exactly to longer future action horizons without new per-query cache entries. Therefore horizon extension alone does not identify a full generative/update model."
+    },
+    "conditioning_history_extension": {
+      "new_history_depth": 3,
+      "future_action_lengths": [
+        1,
+        2,
+        3
+      ],
+      "queries": 28672,
+      "M_exact": "28672/28672",
+      "F_with_oracle_exact": "28672/28672",
+      "G_defined": "0/28672",
+      "H_defined": "0/28672",
+      "interpretation": "H has no seed for newly conditioned histories and no observation-update rule that would generate one. Extension is therefore axis-specific."
+    },
+    "branch_conditioned_query": {
+      "description": "P(Y_{t+2}=1 | h_t, a0, hypothetical Y_{t+1}=y1, a1)",
+      "queries": 2336,
+      "M_exact": "2336/2336",
+      "F_with_oracle_exact": "2336/2336",
+      "G_declared_interface": "UNSUPPORTED",
+      "H_declared_interface": "UNSUPPORTED",
+      "interpretation": "Open-loop horizon extrapolation is distinct from assimilating hypothetical future evidence and continuing the prediction conditionally."
+    }
+  },
+  "parity_identity_nonregression": {
+    "histories": 292,
+    "action_lengths_checked": "1..8",
+    "exact_checks": "148920/148920",
+    "analytic_identity": "For any finite STAY/FLIP sequence in this deterministic X dynamics, the terminal X belief equals the initial belief after an even number of FLIPs and its complement after an odd number. Hence the declared endpoint Y query depends only on q(h) and FLIP parity.",
+    "novelty_claim": false
+  },
+  "external_source_removal": {
+    "F_defined_on_D0_after_oracle_removal": "0/4088",
+    "H_exact_on_D0_without_external_source": "4088/4088",
+    "H_exact_on_horizon_extension_without_external_source": "32704/32704",
+    "interpretation": "H combines local availability and future-horizon extension, yet remains limited to a fixed conditioning-history/query interface."
+  },
+  "hypothesis_status_after_v0_4": {
+    "H1_sufficiency_alone_insufficient": "unchanged",
+    "H2_persistent_recursive_state_necessary": "remains weakened",
+    "H3_local_internal_model_ownership_necessary": "remains weakened by v0.3",
+    "H5_extension_as_scalar_modelhood_discriminator": "weakened: H has exact long-horizon extension on one axis without conditioning-history or branch-conditioned extension",
+    "contract_refinement": "extension should be typed by axis (future horizon, conditioning-history support, query family, hypothetical-evidence branching, source availability, shift)"
+  },
+  "scope": {
+    "establishes": [
+      "A task-specific factorised query program can exactly match the model-owning reference on D0.",
+      "The same program can exactly extrapolate to longer future action horizons on its fixed conditioning-history support without adding per-query cache entries.",
+      "Future-horizon extension and conditioning-history extension are distinct capabilities in this construction.",
+      "Open-loop endpoint prediction and branch-conditioned assimilation of hypothetical future evidence are distinct declared interfaces.",
+      "Local source independence plus horizon extension is still insufficient, by itself, to identify a full generative/update model."
+    ],
+    "does_not_establish": [
+      "That H is or is not a world model.",
+      "A formal complexity, MDL, or minimal-description-length superiority of H over G or M.",
+      "That parity-style factorisation exists in general environments.",
+      "Independent causal/interventional validity beyond the declared action semantics.",
+      "Robustness to regime or distribution shift.",
+      "A necessary-and-sufficient definition of world model."
+    ]
+  }
+}
