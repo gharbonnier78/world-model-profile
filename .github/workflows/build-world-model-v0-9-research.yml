@@ -147,4 +147,5 @@ jobs:
           git add paper/world_model_profile_research_v0_9
           git diff --cached --quiet && exit 0
           git commit -m 'paper: build post-v0.6 research draft v0.9 with Toy C v0.4'
+          git pull --rebase origin research/state-sufficiency-vs-world-modelhood
           git push origin HEAD:research/state-sufficiency-vs-world-modelhood
