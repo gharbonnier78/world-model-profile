@@ -1,0 +1,82 @@
+{
+  "toy": "Toy C v0.2",
+  "horizon_enumerated": 3,
+  "reachable_history_counts": {
+    "0": 4,
+    "1": 32,
+    "2": 256,
+    "3": 2048
+  },
+  "task_query_equivalence_B_C_E": {
+    "all_exact_checks_pass": true,
+    "representation_and_history_recompute_checks": 2340,
+    "one_step_Y_prediction_checks": 584,
+    "recursive_update_checks_B_vs_C": 2336,
+    "decision_query_checks": 584,
+    "branch_conditioned_length2_checks_B_vs_C": 2304,
+    "open_loop_action_sequence_checks_B_C_E": 1080
+  },
+  "nontrivial_predictive_quotient": {
+    "full_belief_coordinates": "(bX,bN)",
+    "predictive_state_coordinate": "q=P(Y_next=1 | h, STAY)",
+    "distinct_q_values": 9,
+    "same_q_different_bN_pairs": 546706,
+    "max_task_Y_alias_gap_within_q_cell": "0",
+    "max_nuisance_Z_next_alias_gap_within_q_cell": "19/129",
+    "witness": {
+      "time": 3,
+      "q": "21/82",
+      "history_1": "((0, 0), 0, (0, 0), 0, (0, 0), 0, (0, 0))",
+      "bN_1": "17/129",
+      "P_Znext1_1": "55/129",
+      "history_2": "((0, 1), 0, (0, 1), 0, (0, 1), 0, (0, 1))",
+      "bN_2": "112/129",
+      "P_Znext1_2": "74/129"
+    },
+    "interpretation": "q is sufficient for Q_task but provably not sufficient for the broader nuisance query Z_next; this is a query-relative quotient, not a reconstruction of the full hidden ontology."
+  },
+  "agent_E_direct_history_model": {
+    "persistent_recursive_state": false,
+    "owns_XY_transition_observation_structure": true,
+    "recomputes_from_full_history_per_query": true,
+    "open_loop_exact_checks": 1080,
+    "interpretation": "Persistent recursive state storage is not required to answer the declared future action-sequence queries exactly in this finite construction. This challenges a strong reading of H2, but does not settle terminology about world-modelhood."
+  },
+  "lookup_control_D": {
+    "training_support_time_depth": "<=1",
+    "training_entries": 72,
+    "exact_on_training_support": true,
+    "heldout_time_depth": 2,
+    "heldout_queries": 512,
+    "heldout_queries_defined": 0,
+    "heldout_coverage": "0/512"
+  },
+  "agent_A_structural_fact": {
+    "exact_current_full_belief": true,
+    "owns_future_generating_operator": false,
+    "owns_rollout_operator": false,
+    "note": "Exact current epistemic state is intentionally separated from possession of a future-query mechanism."
+  },
+  "hypothesis_status": {
+    "H1_sufficiency_alone_insufficient": "supported as an architectural separation example, not a terminology theorem",
+    "H2_recursive_closure_necessary": "weakened/counterexample candidate: Agent E is exact without persistent recursive state",
+    "H3_action_indexed_future_consequences": "survives this toy as the common capability of B,C,E",
+    "H4_breadth_as_profile_frontier": "supported by exact Q_task sufficiency and exact failure of q for nuisance Z prediction"
+  },
+  "scope": {
+    "establishes": [
+      "For Q_task, a one-dimensional predictive state is exactly equivalent to the full generative model for the tested prediction/update/decision/rollout queries.",
+      "The one-dimensional predictive state is a non-injective quotient of the full two-coordinate belief: histories can share q while differing in nuisance belief bN.",
+      "The same q-cell can have zero aliasing for the task query Y and positive aliasing for the broader nuisance query Z.",
+      "A direct-history model can answer the same declared future action-sequence queries exactly without storing a persistent recursively updated state.",
+      "Finite one-step lookup fit on memorized support still provides no held-out compositional coverage."
+    ],
+    "does_not_establish": [
+      "A necessary-and-sufficient definition of world model.",
+      "That recursive computation is never useful or that no internal sufficient statistic is formed transiently by Agent E.",
+      "Independent causal/interventional validity beyond the declared action semantics.",
+      "Robustness under regime shift.",
+      "That Q_task is broad enough to deserve the word world in world model."
+    ]
+  }
+}

@@ -1,0 +1,103 @@
+{
+  "toy": "Toy C v0.3",
+  "environment": "same finite POMDP as Toy C v0.2",
+  "reachable_history_counts": {
+    "0": 4,
+    "1": 32,
+    "2": 256,
+    "3": 2048
+  },
+  "declared_query_domain_D0": {
+    "history_depth": "<=2",
+    "future_action_sequence_lengths": [
+      1,
+      2,
+      3
+    ],
+    "queries": 4088,
+    "query": "P(Y_{t+k}=1 | h_t, future action sequence)"
+  },
+  "extension_domain_Dplus": {
+    "history_depth": "<=2",
+    "future_action_sequence_lengths": [
+      4
+    ],
+    "queries": 4672
+  },
+  "agents": {
+    "M_local_model_owner": {
+      "owns_task_dynamics_inside_local_boundary": true,
+      "uses_external_model_service": false,
+      "persistent_recursive_state_required": false
+    },
+    "F_delegated_access": {
+      "owns_task_dynamics_inside_local_boundary": false,
+      "uses_external_model_service": true,
+      "local_future_answer_without_service": false
+    },
+    "G_compiled_answer_object": {
+      "owns_transition_or_update_operator": false,
+      "compiled_entries": 4088,
+      "declared_extrapolation_rule": false
+    }
+  },
+  "finite_observational_equivalence_on_D0": {
+    "all_answers_equal": true,
+    "M_exact": "4088/4088",
+    "F_with_oracle_exact": "4088/4088",
+    "G_compiled_exact": "4088/4088",
+    "distinct_exact_output_values": 7,
+    "interpretation": "On the declared finite query set, external delegation and a compiled answer table are observationally indistinguishable from the locally model-owning reference by answer correctness alone."
+  },
+  "query_domain_extension": {
+    "M_exact": "4672/4672",
+    "F_with_oracle_exact": "4672/4672",
+    "G_defined": "0/4672",
+    "G_exact_when_defined": "NOT_APPLICABLE",
+    "interpretation": "The compiled finite answer object has no coverage on the uncompiled horizon-4 domain, while the local model and delegated oracle remain exact."
+  },
+  "external_source_removal": {
+    "M_local_model_exact_after_oracle_removal": "4088/4088",
+    "F_defined_after_oracle_removal": "0/4088",
+    "F_exact_after_oracle_removal": "NOT_APPLICABLE",
+    "G_compiled_exact_after_oracle_removal": "4088/4088",
+    "interpretation": "Delegated access disappears when its source is removed; locally owned dynamics remain usable, while compiled answers survive only on their finite cache domain."
+  },
+  "finite_compilation_observation": {
+    "statement": "For this finite declared domain D0, the exact input-output map can be compiled into one table entry per query. Therefore finite behavioral equivalence on D0 cannot by itself identify whether a generative/predictive mechanism is internally possessed.",
+    "novelty_claim": false
+  },
+  "boundary_attribution": {
+    "local_agent_boundary": {
+      "M": "internal model possession",
+      "F": "external model access only",
+      "G": "compiled finite answers"
+    },
+    "expanded_system_boundary_including_oracle": {
+      "F_plus_O": "the composite system contains the external model service and has exact future-query capability"
+    },
+    "interpretation": "Any claim about where the model resides is boundary-relative and should declare the evaluated system boundary."
+  },
+  "hypothesis_status_after_v0_3": {
+    "H1_sufficiency_alone_insufficient": "unchanged: still only an architectural separation example",
+    "H2_persistent_recursive_state_necessary": "remains weakened by Toy C v0.2",
+    "H3_internal_ownership_of_action_indexed_future_mechanism": "weakened as a system-level necessity: delegated access reproduces the same declared behavior while the local agent owns no model",
+    "H4_breadth_as_profile_frontier": "retained and complemented by explicit system-boundary and source-dependence metadata"
+  },
+  "scope": {
+    "establishes": [
+      "Exact answer behavior on a finite declared query set does not identify internal model possession in this construction.",
+      "External model access can substitute exactly for local model possession while the service is available.",
+      "A compiled finite query-answer table can match a model-owning system exactly on the compiled domain.",
+      "Source removal and query-domain extension separate local possession, delegated access, and finite compilation operationally.",
+      "Attribution of model possession depends on the declared system boundary."
+    ],
+    "does_not_establish": [
+      "That a lookup table should or should not be called a world model.",
+      "That external model services are equivalent to local models under latency, privacy, reliability, cost, or robustness constraints.",
+      "A necessary-and-sufficient definition of world model.",
+      "Interventional validity beyond the declared action semantics.",
+      "Robustness to distribution or regime shift."
+    ]
+  }
+}
