@@ -116,19 +116,29 @@ replace_once(
 
 replace_once(
     r"    \item The abstraction frontier is externally declared. Adaptive abstraction discovery and revision remain future work.",
-    r"    \item The abstraction frontier is externally declared. Adaptive abstraction discovery and revision remain future work.\n    \item Toy C v0.4 relies on a deliberately simple parity factorisation; it demonstrates axis-specific extension in this finite system, not a general factorisation theorem or formal complexity advantage.",
+    r"""    \item The abstraction frontier is externally declared. Adaptive abstraction discovery and revision remain future work.
+    \item Toy C v0.4 relies on a deliberately simple parity factorisation; it demonstrates axis-specific extension in this finite system, not a general factorisation theorem or formal complexity advantage.""",
     "limitations",
 )
 
 replace_once(
     r"Toy C v0.3 & delegated F after oracle removal & $0/4088$ defined \\",
-    r"Toy C v0.3 & delegated F after oracle removal & $0/4088$ defined \\\nToy C v0.4 & H exact on baseline $D_0$ & $4088/4088$ \\\nToy C v0.4 & H exact on horizon-4/5/6 extension & $32704/32704$ \\\nToy C v0.4 & H on new depth-3 conditioning histories & $0/28672$ defined \\\nToy C v0.4 & M/F branch-conditioned evidence queries & $2336/2336$ each \\\nToy C v0.4 & H/G branch-conditioned interface & unsupported \\",
+    r"""Toy C v0.3 & delegated F after oracle removal & $0/4088$ defined \\
+Toy C v0.4 & H exact on baseline $D_0$ & $4088/4088$ \\
+Toy C v0.4 & H exact on horizon-4/5/6 extension & $32704/32704$ \\
+Toy C v0.4 & H on new depth-3 conditioning histories & $0/28672$ defined \\
+Toy C v0.4 & M/F branch-conditioned evidence queries & $2336/2336$ each \\
+Toy C v0.4 & H/G branch-conditioned interface & unsupported \\""",
     "finite results table",
 )
 
 replace_once(
-    r"The post-v0.6 package adds \path{verify_toy_c_v0_1.py} with \path{results_v0_1.json}, \path{verify_toy_c_v0_2.py} with \path{results_v0_2.json}, and \path{verify_toy_c_v0_3.py} with \path{results_v0_3.json}. All use exact rational arithmetic. Toy C v0.2 exhaustively enumerates the declared finite horizon, checks the B/C/E task-query equalities, computes the non-injective quotient witness and exact nuisance alias gap $19/129$, and reports lookup coverage rather than inventing outputs when the finite lookup control is undefined. Toy C v0.3 evaluates 4088 finite future queries under local possession, delegated access and compilation, then separates them with a 4672-query horizon extension and external-source removal. No Monte Carlo estimate is used for Toy C.\n\nThe v0.6 release remains a frozen historical milestone. The v0.7 research draft remains preserved. This v0.8 research draft is the post-v0.6 extension through Toy C v0.3 and does not rewrite the accepted v0.4 framework spine.",
-    r"The post-v0.6 package adds \path{verify_toy_c_v0_1.py} with \path{results_v0_1.json}, \path{verify_toy_c_v0_2.py} with \path{results_v0_2.json}, \path{verify_toy_c_v0_3.py} with \path{results_v0_3.json}, and \path{verify_toy_c_v0_4.py} with \path{results_v0_4.json}. All use exact rational arithmetic. Toy C v0.2 exhaustively enumerates the declared finite horizon, checks the B/C/E task-query equalities, computes the non-injective quotient witness and exact nuisance alias gap $19/129$, and reports lookup coverage rather than inventing outputs when the finite lookup control is undefined. Toy C v0.3 evaluates 4088 finite future queries under local possession, delegated access and compilation, then separates them with horizon extension and external-source removal. Toy C v0.4 evaluates 4088 baseline queries, 32704 longer-horizon endpoint queries, 28672 newly conditioned-history queries, 2336 branch-conditioned hypothetical-evidence queries, and an additional 148920 exact parity non-regression checks. No Monte Carlo estimate is used for Toy C.\n\nThe v0.6 release remains a frozen historical milestone. The v0.7 and v0.8 research drafts remain preserved. This v0.9 research draft is the post-v0.6 extension through Toy C v0.4 and does not rewrite the accepted v0.4 framework spine.",
+    r"""The post-v0.6 package adds \path{verify_toy_c_v0_1.py} with \path{results_v0_1.json}, \path{verify_toy_c_v0_2.py} with \path{results_v0_2.json}, and \path{verify_toy_c_v0_3.py} with \path{results_v0_3.json}. All use exact rational arithmetic. Toy C v0.2 exhaustively enumerates the declared finite horizon, checks the B/C/E task-query equalities, computes the non-injective quotient witness and exact nuisance alias gap $19/129$, and reports lookup coverage rather than inventing outputs when the finite lookup control is undefined. Toy C v0.3 evaluates 4088 finite future queries under local possession, delegated access and compilation, then separates them with a 4672-query horizon extension and external-source removal. No Monte Carlo estimate is used for Toy C.
+
+The v0.6 release remains a frozen historical milestone. The v0.7 research draft remains preserved. This v0.8 research draft is the post-v0.6 extension through Toy C v0.3 and does not rewrite the accepted v0.4 framework spine.""",
+    r"""The post-v0.6 package adds \path{verify_toy_c_v0_1.py} with \path{results_v0_1.json}, \path{verify_toy_c_v0_2.py} with \path{results_v0_2.json}, \path{verify_toy_c_v0_3.py} with \path{results_v0_3.json}, and \path{verify_toy_c_v0_4.py} with \path{results_v0_4.json}. All use exact rational arithmetic. Toy C v0.2 exhaustively enumerates the declared finite horizon, checks the B/C/E task-query equalities, computes the non-injective quotient witness and exact nuisance alias gap $19/129$, and reports lookup coverage rather than inventing outputs when the finite lookup control is undefined. Toy C v0.3 evaluates 4088 finite future queries under local possession, delegated access and compilation, then separates them with horizon extension and external-source removal. Toy C v0.4 evaluates 4088 baseline queries, 32704 longer-horizon endpoint queries, 28672 newly conditioned-history queries, 2336 branch-conditioned hypothetical-evidence queries, and an additional 148920 exact parity non-regression checks. No Monte Carlo estimate is used for Toy C.
+
+The v0.6 release remains a frozen historical milestone. The v0.7 and v0.8 research drafts remain preserved. This v0.9 research draft is the post-v0.6 extension through Toy C v0.4 and does not rewrite the accepted v0.4 framework spine.""",
     "reproducibility",
 )
 
