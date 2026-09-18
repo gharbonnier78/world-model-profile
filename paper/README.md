@@ -1,47 +1,53 @@
 # Manuscript Workspace
 
-The accepted v0.4 framework spine is frozen under `../framework/accepted-v0.4/`.
+The accepted v0.4 framework spine is frozen under `../framework/accepted-v0.4/`. The manuscript is built **around** that spine rather than editing the accepted artifact in place.
 
-The manuscript is built **around** that spine rather than editing the accepted artifact in place.
+## Preserved milestones and snapshots
 
-## Published / preserved milestone
+- v0.6 published/preserved milestone: [`world_model_arxiv_draft_v0_6/`](world_model_arxiv_draft_v0_6/)
+- v0.7 preserved research snapshot: [`world_model_profile_research_v0_7/`](world_model_profile_research_v0_7/)
+- v0.8 preserved research snapshot: [`world_model_profile_research_v0_8/`](world_model_profile_research_v0_8/)
+- v0.9 independently reviewed snapshot: [`world_model_profile_research_v0_9/`](world_model_profile_research_v0_9/)
 
-The recovered and audited v0.6 manuscript package is preserved under:
+v0.9 remains preserved exactly as the evidence target reviewed in `../review/INDEPENDENT_REVIEW_V0_9_CLAUDE.md`.
 
-- [`world_model_arxiv_draft_v0_6/`](world_model_arxiv_draft_v0_6/)
-- [`world_model_arxiv_draft_v0_6/IMPORT_MANIFEST.md`](world_model_arxiv_draft_v0_6/IMPORT_MANIFEST.md)
+## Current repairs-only package: v0.9.1
 
-v0.6 is treated as a frozen historical milestone. It is not retroactively rewritten with post-publication ideas.
+The current exploratory authoring package is:
 
-## Post-v0.6 research drafts
+- [`world_model_profile_research_v0_9_1/`](world_model_profile_research_v0_9_1/)
+- [PDF](world_model_profile_research_v0_9_1/world_model_profile_research_v0_9_1.pdf)
+- [LaTeX](world_model_profile_research_v0_9_1/world_model_profile_research_v0_9_1.tex)
+- [SHA-256 manifest](world_model_profile_research_v0_9_1/SHA256SUMS.txt)
 
-Preserved research snapshots:
+**v0.9.1 is repairs-only.** It introduces no new Toy C experiment and does not reopen the accepted v0.4 spine.
 
-- [`world_model_profile_research_v0_7/`](world_model_profile_research_v0_7/)
-- [`world_model_profile_research_v0_8/`](world_model_profile_research_v0_8/)
+The repair:
+- independently exercises delegated Agent F on branch-conditioned queries and source removal;
+- reinterprets H correctly as owning the task-specific predictive operator `K` while lacking observation-assimilation/update `U`;
+- changes “falsifying” language to “weakening” / candidate-criterion language;
+- adds PSR, Dyna and classical prediction/filtering prior art at point of use;
+- records that the scalar-extension candidate was formulated at v0.4, not pre-registered;
+- recognises that most proposed typed-extension directions are already contained in declaration tuple `D`;
+- preserves the original Chronicle and adds a dated post-review audit addendum instead of rewriting history;
+- restores the pre-registered decision-relevance / eliminativist test as the next gate.
 
-The current exploratory authoring package is v0.9:
+The v0.9.1 build completed successfully in GitHub Actions run `35302749759`.
 
-- [`world_model_profile_research_v0_9/`](world_model_profile_research_v0_9/)
-- [`world_model_profile_research_v0_9/world_model_profile_research_v0_9.pdf`](world_model_profile_research_v0_9/world_model_profile_research_v0_9.pdf)
-- [`world_model_profile_research_v0_9/world_model_profile_research_v0_9.tex`](world_model_profile_research_v0_9/world_model_profile_research_v0_9.tex)
-- [`world_model_profile_research_v0_9/SHA256SUMS.txt`](world_model_profile_research_v0_9/SHA256SUMS.txt)
+Current checksums:
+- TeX: `901ad01adb74915aff8b223be52c61374d7d01760a45be855cb28f619eda943f`
+- PDF: `5c28530580928eb092f3d1f732fff4ec7b3d47786a34800397ea2ca35961d5ef`
 
-v0.9 carries Toy C v0.1 through v0.4 into the LaTeX/PDF manuscript together with exact verification artifacts and both Chronicle entries. It is **not an accepted framework revision**.
+## Current research direction
 
-Toy C tests, successively:
+Toy C has decomposed several candidate binary “modelhood” boundaries into technical components rather than converging on one necessary-and-sufficient predicate. The next question is therefore deliberately decision-relative:
 
-- exact current-state sufficiency versus possession of future-generating structure;
-- task-relative predictive quotient versus reconstruction of a richer hidden state;
-- persistent recursive state versus direct-history future-query computation;
-- local model possession versus delegated model access and finite compiled answers;
-- finite benchmark equivalence versus query-domain extension and source removal;
-- typed extension: future-horizon extrapolation versus new conditioning-history support and hypothetical-evidence assimilation.
+> Does the capability contract add engineering decision value beyond a flat technical description such as `(sigma, U, K, Q, boundary, source, ...)`?
 
-The current working direction is increasingly contract-based rather than definitional:
+No Toy C v0.5 and no regime-change construction should be opened before that gate is resolved.
 
-> Report what future-query capability exists, over which query family, from which source and within which declared system boundary, then test it under explicitly typed extension, dependency removal, intervention and shift.
-
-This remains compatible with the accepted layered profile and with the eliminativist alternative. No new layer is introduced from Toy C without a separate formal review cycle.
-
-Before any post-v0.9 research transition, perform the repo-wide and Chronicle-wide independent review defined under `../review/` once present. Also see [`../research/OPEN_QUESTIONS.md`](../research/OPEN_QUESTIONS.md), the Toy C evidence packages, and the Chronicle under `../history/`.
+See:
+- `../review/INDEPENDENT_REVIEW_V0_9_CLAUDE.md`
+- `../review/RESPONSE_TO_INDEPENDENT_REVIEW_V0_9.md`
+- `../research/OPEN_QUESTIONS.md`
+- Chronicle under `../history/`.
