@@ -6,6 +6,23 @@
 **Evidence status:** exact finite construction; exploratory interpretation  
 **Affected program:** World Model Profile / MMALS bridge / Minimal Sufficient Dynamic Inference
 
+## Post-review audit addendum — 18 September 2026
+
+**Purpose:** repair the scientific record without rewriting the contemporaneous v0.4 narrative below.
+
+The independent v0.9 review (`review/INDEPENDENT_REVIEW_V0_9_CLAUDE.md`) judged the Chronicle **COHERENT WITH DRIFT RISK — REPAIR BEFORE NEXT STUDY**. The original text below is intentionally preserved as the record of what was believed when v0.4 was run. The following corrections now govern its interpretation:
+
+1. **H5 was not pre-registered.** The scalar-extension candidate was formulated at v0.4 as an over-reading of v0.3. It should not be presented as if it belonged to the standing H1-H4 set before the experiment.
+2. **The pre-registered decision-relevance test was deferred.** Toy C v0.3 and Chronicle 1 had already named the next gate: test whether the capability contract changes a concrete engineering evaluation or decision beyond a flat technical description. v0.4 substituted a different mechanical construction without recording that deferral. This is the first exact drift point identified by review.
+3. **Agent H contains predictive structure.** The FLIP-parity rule is the exact task-specific action-conditioned predictive operator `K` in closed form. H is therefore not evidence for long-horizon prediction without model structure. Its cleaner role is to separate predictive propagation `K` from observation-assimilation/update `U`.
+4. **Branch-conditioned F required a verifier repair.** The original v0.4 code assigned `f = m` on that domain. The repaired verifier now exercises the delegated F path independently and checks source removal. H/G are recorded as `NOT_IMPLEMENTED` on that interface rather than as measured failures.
+5. **The typed-extension tuple is not a new taxonomy.** Most of its directions are already components of the accepted declaration tuple `D` (query family, horizon, support, intervention, shift). Source/system-boundary provenance remains useful extra evaluation metadata from v0.3.
+6. **The MMALS bridge remains hypothetical.** Toy C does not change the abstraction family. The source MMALS lifecycle is restored as `REUSE -> ADAPT -> FORK -> CANDIDATE NEW REGIME -> VERIFY -> REMEMBER`, with later merge/prune/retire decisions.
+
+**Restored next gate:** no Toy C v0.5 and no regime-change study yet. First run the v0.3 decision-relevance / eliminativist test with its stop condition intact: if capability-contract metadata changes no engineering decision beyond the flat technical description, the mechanical Toy C chain stops and the eliminativist alternative is strengthened.
+
+---
+
 ### Trigger
 
 Toy C v0.3 had weakened the idea that local model possession can be inferred from correct future-query behaviour. A local model owner, a delegated oracle client and a finite compiled answer table were exactly equivalent on the declared finite benchmark. They separated only when the evaluation contract added source removal and query-domain extension.
