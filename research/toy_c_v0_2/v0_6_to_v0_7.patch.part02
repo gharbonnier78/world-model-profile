@@ -1,0 +1,6 @@
+, and reports lookup coverage rather than inventing outputs when the finite lookup control is undefined. No Monte Carlo estimate is used for Toy C.
++
++The v0.6 release remains a frozen historical milestone. This v0.7 research draft is a post-publication extension and does not rewrite the accepted v0.4 framework spine.
+ 
+ \begin{thebibliography}{99}
+ 

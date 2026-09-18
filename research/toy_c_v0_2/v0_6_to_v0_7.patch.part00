@@ -1,0 +1,79 @@
+--- world_model_profile_research_v0_7.tex
++++ world_model_profile_research_v0_7.tex
+@@ -17,15 +17,16 @@
+ \newcommand{\NA}{\texttt{N/A}}
+ \title{\textbf{Beyond ``Has a World Model?'':}\\
+ A Layered Profile of Predictive Abstraction, Intervention,\\
+-Decision Sufficiency, and Robustness under Shift}
++Decision Sufficiency, and Robustness under Shift\\[0.35em]
++\large Post-v0.6 Research Draft with Toy C Extensions}
+ \author{Guillaume Harbonnier\\MMALS Research Program}
+-\date{9 September 2026}
++\date{15 September 2026}
+ 
+ \begin{document}
+ \maketitle
+ 
+ \begin{abstract}
+-The term \emph{world model} is used for systems that differ substantially in what they represent, what they predict, how they are queried, and what kinds of decisions or shifts they support. This makes the binary question ``does system $X$ have a world model?'' too coarse for technical comparison. We propose instead a declared, layered evaluation profile. L0 measures predictive closure at a stated abstraction frontier; $L1_{\rm int}$ concerns interventional validity of the abstract dynamics; L2 separates class-level decision adequacy from operational model--search adequacy; and L3 records system-level robustness under a declared shift class. Acquisition-policy exposure is not treated as an independent layer: an elementary convexity argument bounds it by L0 aliasing, so we report it only as an attribution ratio inside L0. The profile is explicitly grounded in classical state abstraction and bisimulation, approximate information states, value equivalence, self-predictive representations, causal abstraction, and recent analyses of learned planning models. Two exact finite constructions establish only that L0 and L2 are non-identical coordinates: one representation is predictively closed at a coarse abstraction while incurring positive contingent-decision regret, while a second model is exactly value-equivalent on a declared value class despite failing full-state predictive closure. We additionally give illustrative diagnostics for the geometry dependence of the acquisition-policy attribution ratio and for a minimal operational-vs-global adequacy failure. We do not claim a unique definition of world models, a necessary-and-sufficient theory, or superiority over the eliminativist alternative of reporting the underlying technical tuple directly.
++The term \emph{world model} is used for systems that differ substantially in what they represent, what they predict, how they are queried, and what kinds of decisions or shifts they support. This makes the binary question ``does system $X$ have a world model?'' too coarse for technical comparison. We propose instead a declared, layered evaluation profile. L0 measures predictive closure at a stated abstraction frontier; $L1_{\rm int}$ concerns interventional validity of the abstract dynamics; L2 separates class-level decision adequacy from operational model--search adequacy; and L3 records system-level robustness under a declared shift class. Acquisition-policy exposure is not treated as an independent layer: an elementary convexity argument bounds it by L0 aliasing, so we report it only as an attribution ratio inside L0. The profile is explicitly grounded in classical state abstraction and bisimulation, approximate information states, value equivalence, self-predictive representations, causal abstraction, and recent analyses of learned planning models. Two exact finite constructions establish only that L0 and L2 are non-identical coordinates: one representation is predictively closed at a coarse abstraction while incurring positive contingent-decision regret, while a second model is exactly value-equivalent on a declared value class despite failing full-state predictive closure. We additionally give illustrative diagnostics for the geometry dependence of the acquisition-policy attribution ratio and for a minimal operational-vs-global adequacy failure. A post-v0.6 extension, Toy C, probes a different boundary: whether exact state sufficiency is distinct from possession of a future-generating model mechanism. Toy C v0.1 separates an oracle-supplied exact belief from owned predictive dynamics; Toy C v0.2 constructs a non-injective one-dimensional predictive quotient that is exact for a declared task-query family while provably insufficient for a richer nuisance query, and adds a direct-history predictor that challenges persistent recursive state storage as a necessary implementation condition. We do not claim a unique definition of world models, a necessary-and-sufficient theory, or superiority over the eliminativist alternative of reporting the underlying technical tuple directly.
+ \end{abstract}
+ 
+ \paragraph{Scope and evidence.}
+@@ -64,6 +65,7 @@
+     \item We formulate L0 as a \emph{predictive abstraction frontier}: the report names the finest tested abstraction level at which declared budgets hold and, when available, a natural richer level that fails.
+     \item We separate class-level decision adequacy (L2.G) from operational model--search adequacy (L2.O), so that performance measured on a planner's self-induced query distribution is not silently read as a global claim.
+     \item We show exactly in finite constructions that $L0\not\Rightarrow L2$ and $L2.G\not\Rightarrow L0$ under explicit declarations. Interventional validity remains a separate coordinate, while acquisition-policy exposure is retained only as an attribution diagnostic inside L0.
++    \item In a post-v0.6 falsification cycle, Toy C separates current-state sufficiency from future-query capability, then tests a genuinely information-losing predictive quotient and a direct-history sequence predictor before any new framework layer is considered.
+ \end{itemize}
+ 
+ We keep a competing eliminativist position alive throughout: the term \emph{world model} may ultimately add less than a direct report of $(\sigma,K,\text{sufficiency class},\text{shift class},\ldots)$. The paper's burden is therefore not to defend a label, but to show whether the profile improves localisation of what a system has and has not demonstrated.
+@@ -417,6 +419,92 @@
+ \]
+ under explicit declarations, but they do \emph{not} establish non-collinearity in a non-degenerate regime: Toy A uses a very coarse phase abstraction, and Toy B chooses a value class blind to nuisance by construction.
+ 
++\section{Post-v0.6 extension: state sufficiency versus model structure}
++\label{sec:toyc}
++
++Toy A and Toy B separate predictive and decision-relative adequacy. They do not answer a different question exposed by the POMDP belief-state comparison: if a statistic of history is already sufficient, what additional technical property, if any, turns that state into a model? Toy C attacks that question through finite counterexamples rather than by adding another profile coordinate.
++
++\subsection{Toy C v0.1: exact current state versus future-generating capability}
++
++Let $S_t\in\{0,1\}$, let $O_t$ be a symmetric $3/4$-accurate observation of $S_t$, and let the two actions induce identity and anti-persistent state dynamics. The exact Bayesian belief is
++\[
++b_t=P(S_t=1\mid h_t).
++\]
++The predictive state
++\[
++q_t=P(O_{t+1}=1\mid h_t,a_t=0)
++=\frac14+\frac12 b_t
++\]
++can be updated and rolled forward directly in $q$-space.
++
++Four systems are separated. Agent A receives the exact $b_t$ from an oracle at every real step but owns no transition, observation, update or rollout operator. Agent B owns the scalar predictive state and exact action-conditioned predictive/update rules but no explicit hidden-state representation. Agent C owns the full generative model and Bayesian filter. Control D memorises exact one-step predictions only on a finite training support.
++
++Exact rational enumeration through depth four gives B/C equality on 682 representation checks, 340 one-step predictions, 680 posterior updates, 340 decision queries, 640 branch-conditioned length-three compositions and 300 open-loop action-sequence queries. The lookup control is exact on 20 memorised entries but has $0/64$ coverage on held-out depth-two queries.
++
++This construction supports only an architectural distinction:
++\[
++\text{exact current epistemic state}
++\;\not\equiv\;
++\text{owned future-generating mechanism}.
++\]
++Its main limitation is deliberate: $q_t$ is an affine bijection of the complete binary belief, so v0.1 does not yet demonstrate a genuinely information-losing predictive quotient.
++
++\subsection{Toy C v0.2: a non-injective predictive quotient}
++
++To attack that limitation, let the hidden state be
++\[
++S_t=(X_t,N_t),\qquad X_t,N_t\in\{0,1\}.
++\]
++Action $a_t\in\{\mathrm{STAY},\mathrm{FLIP}\}$ controls only $X$: $\mathrm{STAY}$ preserves it and $\mathrm{FLIP}$ maps $X$ to $1-X$. The nuisance variable $N$ evolves independently with persistence $2/3$. Observation is the pair $O_t=(Y_t,Z_t)$ with
++\[
++P(Y_t=X_t)=\frac34,
++\qquad
++P(Z_t=N_t)=\frac45.
++\]
++With independent uniform priors, the full posterior factorises as $(b_t^X,b_t^N)$.
++
++De

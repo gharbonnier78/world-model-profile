@@ -1,0 +1,120 @@
+{
+  "toy": "Toy C v0.4",
+  "subtitle": "Review repair: task-specific predictive operator K without observation-update U",
+  "environment": "same finite POMDP as Toy C v0.2/v0.3",
+  "reachable_history_counts": {
+    "0": 4,
+    "1": 32,
+    "2": 256,
+    "3": 2048
+  },
+  "agent_H_factorised_query_program": {
+    "supported_conditioning_history_depth": "<=2",
+    "predictive_seed_entries": 292,
+    "seed": "q(h)=P(Y_next=1 | h, STAY)",
+    "future_action_rule": "return q for even FLIP parity, 1-q for odd FLIP parity",
+    "owns_declared_hidden_state_model": false,
+    "owns_declared_observation_update_rule": false,
+    "owns_declared_nuisance_model": false,
+    "owns_action_conditioned_predictive_operator_K": true,
+    "predictive_operator_form": "closed-form FLIP-parity action on q(h)",
+    "uses_external_model_service": false,
+    "note": "Independent review identified the parity rule as the exact task-specific predictive operator K in closed form. H therefore witnesses prediction without an implemented observation-assimilation/update operator U; the experiment does not decide whether H should be called a world model."
+  },
+  "baseline_D0": {
+    "history_depth": "<=2",
+    "future_action_lengths": [
+      1,
+      2,
+      3
+    ],
+    "queries": 4088,
+    "all_answers_equal": true,
+    "M_exact": "4088/4088",
+    "F_with_oracle_exact": "4088/4088",
+    "G_compiled_exact": "4088/4088",
+    "H_factorised_exact": "4088/4088",
+    "G_query_entries": 4088,
+    "H_seed_entries": 292,
+    "query_sequences_per_supported_history": 14,
+    "entry_count_note": "4088/292=14 is the identity 2+4+8, the number of baseline action sequences per supported history. It is not an independently measured compression ratio and carries no MDL or complexity claim."
+  },
+  "typed_extension": {
+    "future_horizon_extension": {
+      "conditioning_history_depth": "<=2",
+      "new_action_lengths": [
+        4,
+        5,
+        6
+      ],
+      "queries": 32704,
+      "M_exact": "32704/32704",
+      "F_with_oracle_exact": "32704/32704",
+      "G_defined": "0/32704",
+      "H_defined": "32704/32704",
+      "H_exact_when_defined": "32704/32704",
+      "interpretation": "H owns the exact task-specific action-conditioned predictive operator K in closed form and therefore composes endpoint predictions to longer horizons on its fixed supported histories. This does not test absence of predictive model structure; it separates prediction from filtering/update."
+    },
+    "conditioning_history_extension": {
+      "new_history_depth": 3,
+      "future_action_lengths": [
+        1,
+        2,
+        3
+      ],
+      "queries": 28672,
+      "M_exact": "28672/28672",
+      "F_with_oracle_exact": "28672/28672",
+      "G_defined": "0/28672",
+      "H_defined": "0/28672",
+      "interpretation": "H has no seed for newly conditioned histories and no observation-update rule that would generate one. Extension is therefore axis-specific."
+    },
+    "branch_conditioned_query": {
+      "description": "P(Y_{t+2}=1 | h_t, a0, hypothetical Y_{t+1}=y1, a1)",
+      "queries": 2336,
+      "M_exact": "2336/2336",
+      "F_with_oracle_exact": "2336/2336",
+      "F_without_oracle_defined": "0/2336",
+      "G_interface_status": "NOT_IMPLEMENTED",
+      "H_interface_status": "NOT_IMPLEMENTED",
+      "interpretation": "M and the independently exercised delegated F path can assimilate hypothetical future evidence when the oracle is available; F becomes undefined when that source is removed. H/G do not implement this branch-conditioned interface. The scoped distinction is prediction versus observation-assimilation/filtering, not model versus non-model."
+    }
+  },
+  "parity_identity_nonregression": {
+    "histories": 292,
+    "action_lengths_checked": "1..8",
+    "exact_checks": "148920/148920",
+    "analytic_identity": "For any finite STAY/FLIP sequence in this deterministic X dynamics, the terminal X belief equals the initial belief after an even number of FLIPs and its complement after an odd number. Hence the declared endpoint Y query depends only on q(h) and FLIP parity.",
+    "novelty_claim": false
+  },
+  "external_source_removal": {
+    "F_defined_on_D0_after_oracle_removal": "0/4088",
+    "H_exact_on_D0_without_external_source": "4088/4088",
+    "H_exact_on_horizon_extension_without_external_source": "32704/32704",
+    "interpretation": "H combines local availability and future-horizon extension, yet remains limited to a fixed conditioning-history/query interface."
+  },
+  "hypothesis_status_after_v0_4": {
+    "H1_sufficiency_alone_insufficient": "unchanged",
+    "H2_persistent_recursive_state_necessary": "remains weakened",
+    "H3_local_internal_model_ownership_necessary": "remains weakened by v0.3",
+    "v0_4_candidate_H5_status": "H5 was formulated at v0.4 as a candidate over-reading of v0.3, not pre-registered. Independent review shows H already owns predictive K, so v0.4 is better interpreted as prediction-vs-filtering decomposition.",
+    "declaration_relation": "Most proposed extension directions are already components of the accepted declaration tuple D (query family, horizon, history support, intervention, shift). Source/boundary provenance remains separate evaluation metadata."
+  },
+  "scope": {
+    "establishes": [
+      "A task-specific factorised query program can exactly match the model-owning reference on D0.",
+      "H owns an exact task-specific predictive operator K in closed form and composes it exactly to longer future horizons on fixed supported histories.",
+      "H lacks an implemented observation-assimilation/update operator U, so prediction and filtering/update are separable components in this construction.",
+      "The delegated F branch-conditioned path is exact when its external oracle is available and undefined when that source is removed.",
+      "H/G do not implement the branch-conditioned hypothetical-evidence interface; this is an interface fact, not a measured failure score."
+    ],
+    "does_not_establish": [
+      "That H is or is not a world model.",
+      "A formal complexity, MDL, or minimal-description-length superiority of H over G or M.",
+      "That parity-style factorisation exists in general environments.",
+      "Independent causal/interventional validity beyond the declared action semantics.",
+      "Robustness to regime or distribution shift.",
+      "A necessary-and-sufficient definition of world model."
+    ]
+  }
+}

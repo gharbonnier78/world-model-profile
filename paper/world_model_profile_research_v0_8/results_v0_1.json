@@ -1,0 +1,57 @@
+{
+  "toy": "Toy C v0.1",
+  "horizon_enumerated": 4,
+  "reachable_history_counts": {
+    "0": 2,
+    "1": 8,
+    "2": 32,
+    "3": 128,
+    "4": 512
+  },
+  "exact_equivalence": {
+    "all_checks_pass": true,
+    "representation_checks": 682,
+    "one_step_prediction_checks": 340,
+    "posterior_update_checks": 680,
+    "decision_query_checks": 340,
+    "branch_conditioned_length3_checks": 640,
+    "open_loop_action_sequence_checks": 300
+  },
+  "predictive_state_range": {
+    "min_q": "123/488",
+    "max_q": "365/488",
+    "distinct_q_values": 269
+  },
+  "lookup_control_D": {
+    "training_support_time_depth": "<=1",
+    "training_entries": 20,
+    "training_checks": 20,
+    "exact_on_training_support": true,
+    "heldout_time_depth": 2,
+    "heldout_queries": 64,
+    "heldout_queries_defined": 0,
+    "heldout_coverage": "0/64"
+  },
+  "agent_A_structural_fact": {
+    "exact_current_belief": true,
+    "owns_transition_operator": false,
+    "owns_observation_operator": false,
+    "owns_recursive_update_operator": false,
+    "owns_rollout_operator": false,
+    "note": "This is an architectural capability distinction, not a numerical error claim."
+  },
+  "scope": {
+    "establishes": [
+      "In this finite process, explicit hidden-state ontology is not required for exact action-conditioned prediction, recursive update, rollout, or the declared one-step decision query.",
+      "An exact current sufficient belief can be provided without providing a future-generating model.",
+      "Exact one-step fit on finite training support does not by itself provide off-support compositional coverage."
+    ],
+    "does_not_establish": [
+      "A necessary-and-sufficient definition of world model.",
+      "That recursive latent-state update is universally necessary for modelhood.",
+      "Independent interventional validity beyond action conditioning; the action is the sole intervention point here.",
+      "Robustness under distribution or regime shift.",
+      "That the predictive state q is a nontrivial compression relative to belief; here it is an affine bijection."
+    ]
+  }
+}

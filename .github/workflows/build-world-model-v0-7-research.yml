@@ -1,0 +1,147 @@
+name: Build World Model research draft v0.7
+
+on:
+  push:
+    branches:
+      - research/state-sufficiency-vs-world-modelhood
+    paths:
+      - 'research/toy_c_v0_1/**'
+      - 'research/toy_c_v0_2/**'
+      - 'history/2026-09-15_toy_c_state_sufficiency_chronicle.md'
+      - '.github/workflows/build-world-model-v0-7-research.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout research branch
+        uses: actions/checkout@v4
+        with:
+          ref: research/state-sufficiency-vs-world-modelhood
+          fetch-depth: 0
+
+      - name: Install LaTeX
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y texlive-latex-base texlive-latex-extra texlive-fonts-recommended
+
+      - name: Verify Toy C exact evidence
+        shell: bash
+        run: |
+          set -euo pipefail
+          python research/toy_c_v0_1/verify_toy_c_v0_1.py > /tmp/toy_c_v01.json
+          diff -u research/toy_c_v0_1/results_v0_1.json /tmp/toy_c_v01.json
+          python research/toy_c_v0_2/verify_toy_c_v0_2.py > /tmp/toy_c_v02.json
+          diff -u research/toy_c_v0_2/results_v0_2.json /tmp/toy_c_v02.json
+
+      - name: Reconstruct v0.6 source and apply post-v0.6 patch
+        shell: bash
+        run: |
+          set -euo pipefail
+          PKG='paper/world_model_arxiv_draft_v0_6'
+          OUT='paper/world_model_profile_research_v0_7'
+          mkdir -p "$OUT"
+
+          cat \
+            "$PKG/_source_parts/world_model_profile_arxiv_draft_v0_6.tex.part00" \
+            "$PKG/_source_parts/world_model_profile_arxiv_draft_v0_6.tex.part01a" \
+            "$PKG/_source_parts/world_model_profile_arxiv_draft_v0_6.tex.part01b" \
+            "$PKG/_source_parts/world_model_profile_arxiv_draft_v0_6.tex.part02" \
+            > "$OUT/world_model_profile_research_v0_7.tex"
+
+          BASE_SHA="$(sha256sum "$OUT/world_model_profile_research_v0_7.tex" | awk '{print $1}')"
+          test "$BASE_SHA" = '048c1219599fa3106e397f5542c6c469efeb2bb001c9e9283a554491ea4148db'
+
+          cat research/toy_c_v0_2/v0_6_to_v0_7.patch.part* > /tmp/v0_6_to_v0_7.patch
+          (
+            cd "$OUT"
+            patch -u world_model_profile_research_v0_7.tex < "$GITHUB_WORKSPACE/tmp-not-used" 2>/dev/null || true
+          )
+          patch -u "$OUT/world_model_profile_research_v0_7.tex" < /tmp/v0_6_to_v0_7.patch
+
+          V07_SHA="$(sha256sum "$OUT/world_model_profile_research_v0_7.tex" | awk '{print $1}')"
+          test "$V07_SHA" = '5e03cf0186a95afc7d9c315c9a01620866b149d52dc8d0d08d8eda88b2b0217e'
+
+          cp "$PKG/fig_toy_a_regret.png" "$OUT/"
+          cp "$PKG/fig_rho_three_history.png" "$OUT/"
+          cp "$PKG/verify_finite_separations.py" "$OUT/"
+          cp "$PKG/finite_separation_results.json" "$OUT/"
+          cp "$PKG/toy_a_grid.csv" "$OUT/"
+          cp "$PKG/verify_supporting_diagnostics.py" "$OUT/"
+          cp "$PKG/supporting_diagnostics_results.json" "$OUT/"
+
+          cp research/toy_c_v0_1/TOY_C_V0_1_SPEC.md "$OUT/"
+          cp research/toy_c_v0_1/verify_toy_c_v0_1.py "$OUT/"
+          cp research/toy_c_v0_1/results_v0_1.json "$OUT/"
+          cp research/toy_c_v0_2/TOY_C_V0_2_SPEC.md "$OUT/"
+          cp research/toy_c_v0_2/verify_toy_c_v0_2.py "$OUT/"
+          cp research/toy_c_v0_2/results_v0_2.json "$OUT/"
+          cp history/2026-09-15_toy_c_state_sufficiency_chronicle.md "$OUT/CHRONICLE_2026-09-15_TOY_C.md"
+
+      - name: Compile PDF
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd paper/world_model_profile_research_v0_7
+          pdflatex -interaction=nonstopmode -halt-on-error world_model_profile_research_v0_7.tex
+          pdflatex -interaction=nonstopmode -halt-on-error world_model_profile_research_v0_7.tex
+          test -s world_model_profile_research_v0_7.pdf
+          rm -f *.aux *.log *.out
+
+      - name: Write package manifest
+        shell: bash
+        run: |
+          set -euo pipefail
+          OUT='paper/world_model_profile_research_v0_7'
+          cat > "$OUT/README.md" <<'EOF'
+          # World Model Profile — post-v0.6 research draft v0.7
+
+          **Status:** exploratory post-publication research draft. It does not reopen the accepted v0.4 framework spine and does not rewrite the preserved v0.6 milestone.
+
+          This package integrates Toy C v0.1 and v0.2 into the manuscript and keeps the exact finite evidence beside the LaTeX/PDF.
+
+          Key post-v0.6 findings under falsification:
+
+          - Toy C v0.1 separates exact current-state knowledge from possession of a future-generating mechanism.
+          - Toy C v0.2 makes the predictive quotient genuinely non-injective: task-query aliasing is exactly `0`, while the richer nuisance-query aliasing gap is exactly `19/129`.
+          - Agent E answers all declared future action-sequence queries exactly without carrying a persistent recursively updated state, weakening a strong recursive-state necessity hypothesis.
+          - These are finite scoped results, not a necessary-and-sufficient definition of world model.
+
+          Reproduce the exact Toy C evidence with:
+
+          ```bash
+          python verify_toy_c_v0_1.py
+          python verify_toy_c_v0_2.py
+          ```
+
+          The LaTeX source is reconstructed from the checksum-verified v0.6 source and the versioned patch parts in `research/toy_c_v0_2/`, then compiled by the repository workflow.
+          EOF
+
+          (
+            cd "$OUT"
+            sha256sum \
+              world_model_profile_research_v0_7.tex \
+              world_model_profile_research_v0_7.pdf \
+              TOY_C_V0_1_SPEC.md verify_toy_c_v0_1.py results_v0_1.json \
+              TOY_C_V0_2_SPEC.md verify_toy_c_v0_2.py results_v0_2.json \
+              CHRONICLE_2026-09-15_TOY_C.md \
+              verify_finite_separations.py finite_separation_results.json toy_a_grid.csv \
+              verify_supporting_diagnostics.py supporting_diagnostics_results.json \
+              fig_toy_a_regret.png fig_rho_three_history.png \
+              > SHA256SUMS.txt
+          )
+
+      - name: Commit generated v0.7 package
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add paper/world_model_profile_research_v0_7
+          git diff --cached --quiet && exit 0
+          git commit -m 'paper: build post-v0.6 research draft v0.7 with Toy C'
+          git push origin HEAD:research/state-sufficiency-vs-world-modelhood
