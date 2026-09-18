@@ -1,6 +1,6 @@
 {
   "toy": "Toy C v0.4",
-  "subtitle": "Typed extension: horizon generalisation without full generative closure",
+  "subtitle": "Review repair: task-specific predictive operator K without observation-update U",
   "environment": "same finite POMDP as Toy C v0.2/v0.3",
   "reachable_history_counts": {
     "0": 4,
@@ -16,8 +16,10 @@
     "owns_declared_hidden_state_model": false,
     "owns_declared_observation_update_rule": false,
     "owns_declared_nuisance_model": false,
+    "owns_action_conditioned_predictive_operator_K": true,
+    "predictive_operator_form": "closed-form FLIP-parity action on q(h)",
     "uses_external_model_service": false,
-    "note": "H is intentionally a task-specific query program. The experiment does not assert whether such an object should or should not be called a model."
+    "note": "Independent review identified the parity rule as the exact task-specific predictive operator K in closed form. H therefore witnesses prediction without an implemented observation-assimilation/update operator U; the experiment does not decide whether H should be called a world model."
   },
   "baseline_D0": {
     "history_depth": "<=2",
@@ -34,8 +36,8 @@
     "H_factorised_exact": "4088/4088",
     "G_query_entries": 4088,
     "H_seed_entries": 292,
-    "entry_count_factor_G_over_H": "14",
-    "complexity_caveat": "Entry counts are bookkeeping only; the rule/code description length of H is not included, so this is not a formal compression or MDL comparison."
+    "query_sequences_per_supported_history": 14,
+    "entry_count_note": "4088/292=14 is the identity 2+4+8, the number of baseline action sequences per supported history. It is not an independently measured compression ratio and carries no MDL or complexity claim."
   },
   "typed_extension": {
     "future_horizon_extension": {
@@ -51,7 +53,7 @@
       "G_defined": "0/32704",
       "H_defined": "32704/32704",
       "H_exact_when_defined": "32704/32704",
-      "interpretation": "H extrapolates exactly to longer future action horizons without new per-query cache entries. Therefore horizon extension alone does not identify a full generative/update model."
+      "interpretation": "H owns the exact task-specific action-conditioned predictive operator K in closed form and therefore composes endpoint predictions to longer horizons on its fixed supported histories. This does not test absence of predictive model structure; it separates prediction from filtering/update."
     },
     "conditioning_history_extension": {
       "new_history_depth": 3,
@@ -72,9 +74,10 @@
       "queries": 2336,
       "M_exact": "2336/2336",
       "F_with_oracle_exact": "2336/2336",
-      "G_declared_interface": "UNSUPPORTED",
-      "H_declared_interface": "UNSUPPORTED",
-      "interpretation": "Open-loop horizon extrapolation is distinct from assimilating hypothetical future evidence and continuing the prediction conditionally."
+      "F_without_oracle_defined": "0/2336",
+      "G_interface_status": "NOT_IMPLEMENTED",
+      "H_interface_status": "NOT_IMPLEMENTED",
+      "interpretation": "M and the independently exercised delegated F path can assimilate hypothetical future evidence when the oracle is available; F becomes undefined when that source is removed. H/G do not implement this branch-conditioned interface. The scoped distinction is prediction versus observation-assimilation/filtering, not model versus non-model."
     }
   },
   "parity_identity_nonregression": {
@@ -94,16 +97,16 @@
     "H1_sufficiency_alone_insufficient": "unchanged",
     "H2_persistent_recursive_state_necessary": "remains weakened",
     "H3_local_internal_model_ownership_necessary": "remains weakened by v0.3",
-    "H5_extension_as_scalar_modelhood_discriminator": "weakened: H has exact long-horizon extension on one axis without conditioning-history or branch-conditioned extension",
-    "contract_refinement": "extension should be typed by axis (future horizon, conditioning-history support, query family, hypothetical-evidence branching, source availability, shift)"
+    "v0_4_candidate_H5_status": "H5 was formulated at v0.4 as a candidate over-reading of v0.3, not pre-registered. Independent review shows H already owns predictive K, so v0.4 is better interpreted as prediction-vs-filtering decomposition.",
+    "declaration_relation": "Most proposed extension directions are already components of the accepted declaration tuple D (query family, horizon, history support, intervention, shift). Source/boundary provenance remains separate evaluation metadata."
   },
   "scope": {
     "establishes": [
       "A task-specific factorised query program can exactly match the model-owning reference on D0.",
-      "The same program can exactly extrapolate to longer future action horizons on its fixed conditioning-history support without adding per-query cache entries.",
-      "Future-horizon extension and conditioning-history extension are distinct capabilities in this construction.",
-      "Open-loop endpoint prediction and branch-conditioned assimilation of hypothetical future evidence are distinct declared interfaces.",
-      "Local source independence plus horizon extension is still insufficient, by itself, to identify a full generative/update model."
+      "H owns an exact task-specific predictive operator K in closed form and composes it exactly to longer future horizons on fixed supported histories.",
+      "H lacks an implemented observation-assimilation/update operator U, so prediction and filtering/update are separable components in this construction.",
+      "The delegated F branch-conditioned path is exact when its external oracle is available and undefined when that source is removed.",
+      "H/G do not implement the branch-conditioned hypothetical-evidence interface; this is an interface fact, not a measured failure score."
     ],
     "does_not_establish": [
       "That H is or is not a world model.",
