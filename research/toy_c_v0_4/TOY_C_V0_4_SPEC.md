@@ -1,19 +1,19 @@
-# Toy C v0.4 — Typed extension: horizon generalisation without full generative closure
+# Toy C v0.4 — Review-repaired interpretation: predictive operator without filtering closure
 
-**Status:** exact finite research construction; post-v0.6 exploratory evidence.  
+**Status:** exact finite research construction; post-v0.6 exploratory evidence; interpretation repaired after independent review.  
 **Relationship to accepted spine:** does **not** modify or reopen the frozen v0.4 framework.  
 **Parent:** Toy C v0.3.  
-**Purpose:** perform the next deliberately mechanical falsification step after v0.3.
+**Purpose:** preserve the exact v0.4 construction while correcting what it actually establishes.
 
-Toy C v0.3 showed that exact finite answer behaviour does not identify local model possession: a local model owner, a delegated oracle client, and a compiled finite answer table can be identical on a declared finite domain. Query-domain extension then separated the compiled table from the mechanisms that could answer a longer horizon.
+Toy C v0.3 showed that exact finite answer behaviour does not identify local model possession: a local model owner, a delegated oracle client, and a compiled finite answer table can be identical on a declared finite domain. Query-domain extension then separated the compiled table from mechanisms with wider predictive access.
 
-Toy C v0.4 attacks a tempting over-reading of that result:
+At v0.4 we formulated, **at v0.4 itself**, a candidate over-reading of that result:
 
-> perhaps **extension capability** itself is the remaining discriminator of model-like structure.
+> perhaps **extension capability** is a scalar discriminator of model-like structure.
 
-The experiment shows that this is still too coarse. A task-specific answer program can extrapolate exactly to arbitrarily long future action sequences on a fixed conditioning-history support while lacking any declared observation-update rule, nuisance model, or capability to extend to newly conditioned histories.
+This was **not** a pre-registered H5 from the earlier hypothesis set. Independent review showed that Agent H does not demonstrate prediction without model structure: its FLIP-parity rule is the exact task-specific action-conditioned predictive operator `K` in closed form. What H lacks is the observation-assimilation/update machinery `U`.
 
-The result is not a definition of *world model*. It is a refinement of what must be declared when saying that a predictive capability “extends”.
+The repaired result is therefore a finite decomposition of **prediction versus filtering/update**, plus an audit of source dependence and supported query interfaces. It is not a definition of *world model*, and it does not justify a new extension taxonomy or framework layer.
 
 ---
 
@@ -147,31 +147,27 @@ q(h), & \text{even number of FLIPs},\\
 \end{cases}
 \]
 
-This is a **query program**, not a full generative simulator.
+This is not a full generative simulator or filtering architecture, but it **does own an exact task-specific predictive operator**: the parity rule is `K` in closed form for the declared task coordinate.
 
-The experiment deliberately does not decide whether H “counts as a model”. The only scientific claim is about its measurable capabilities.
+In the provisional object `M = (sigma, U, K, Q)`, H is best described as carrying supported `sigma`, `K`, and endpoint query semantics `Q`, while lacking an implemented observation-assimilation/update operator `U` for new evidence.
 
----
-
-## 4. Why this attacks v0.3 rather than merely extending it
-
-v0.3 separated the finite table G from M/F by asking a longer-horizon question that was not present in G.
-
-A weak reading would be:
-
-\[
-\text{can answer longer horizons}
-\quad\Longrightarrow\quad
-\text{has model-like generative structure}.
-\]
-
-H is designed as a counterexample candidate to that reading.
-
-H contains no per-query answers for horizons 4, 5 or 6. Yet once a seed \(q(h)\) is available, the parity rule gives the exact endpoint answer at every tested longer horizon — and analytically at any finite horizon for this environment.
-
-So “extension” must itself be typed.
+The experiment deliberately does not decide whether H “counts as a world model”. The scientific claim is the component decomposition.
 
 ---
+
+## 4. What v0.4 actually tests after review
+
+v0.3 separated the finite table G from M/F by asking a longer-horizon question not present in G.
+
+v0.4 then explored a candidate over-reading: that extension beyond the compiled domain might itself identify richer model-like structure. The independent review rejects the strongest version of that interpretation because H already contains the exact predictive operator `K` for the task subsystem.
+
+H contains no per-query answers for horizons 4, 5 or 6. Once a seed `q(h)` is available, its closed-form `K` composes endpoint predictions at every tested longer horizon — and analytically at any finite horizon in this deliberately simple involutive dynamics.
+
+The informative separation is therefore:
+
+`predictive propagation K != evidence assimilation/update U`.
+
+The horizon, history-support, and branch-conditioned checks remain useful as interface probes, but they are not three independent discoveries and they do not define modelhood.
 
 ## 5. Exact tests
 
@@ -229,7 +225,7 @@ H has no seed for these histories and no observation-update rule from which to g
 
 ### 5.4 Branch-conditioned future query
 
-A distinct query asks the model to absorb a *hypothetical future observation* before continuing:
+A distinct query asks the system to absorb a *hypothetical future observation* before continuing:
 
 \[
 P(
@@ -244,11 +240,9 @@ a_{t+1}=a_1
 
 This is not the same operation as open-loop endpoint prediction.
 
-M/F expose the required conditional update.
+M exposes the required conditional update locally. F delegates the same branch-conditioned query through its external model service, so the repaired verifier exercises that delegated path independently and also removes the service to test source dependence.
 
-H deliberately does not.
-
-The verifier reports unsupported interfaces as unsupported rather than inventing outputs.
+H and G do not implement this branch-conditioned interface. The verifier reports that fact as **NOT_IMPLEMENTED**, not as a measured failure score.
 
 ### 5.5 Parity identity non-regression
 
@@ -286,17 +280,15 @@ On `D0`:
 M=F+O=G=H=\frac{4088}{4088}.
 \]
 
-The full query table G contains 4088 query-answer entries.
+The full query table G contains 4088 query-answer entries. H stores one seed for each of the 292 supported histories plus its predictive rule.
 
-H stores only 292 history seeds plus its rule.
-
-The entry-count ratio is
+There are `2+4+8=14` baseline action sequences per supported conditioning history, so
 
 \[
-\frac{4088}{292}=14.
+4088 = 292\times 14
 \]
 
-This is only bookkeeping. The rule/code description length is not included, so this is **not** a formal compression, Kolmogorov-complexity, or MDL claim.
+is an identity induced by the benchmark construction. It is **not an independently measured compression ratio** and carries no Kolmogorov-complexity, MDL, or other complexity claim.
 
 ### 6.2 Future-horizon extension
 
@@ -350,102 +342,63 @@ The branch-conditioned domain contains
 
 queries.
 
-M/F are exact on all of them:
+The repaired verifier measures the two implemented paths independently:
 
 \[
-M=F+O=\frac{2336}{2336}.
+M=\frac{2336}{2336},
+\qquad
+F+O=\frac{2336}{2336}.
 \]
 
-G and H do not expose the required interface.
-
-This separates:
+After removing the external service,
 
 \[
-\text{open-loop endpoint extrapolation}
+\mathrm{coverage}(F,\text{branch}\mid O\text{ removed})=\frac{0}{2336}.
 \]
 
-from
+G and H do not implement the required branch-conditioned interface; this is recorded as an interface status, not as a failure count.
 
-\[
-\text{hypothetical evidence assimilation + continued prediction}.
-\]
+The scoped distinction is between open-loop predictive propagation and evidence assimilation/filtering.
 
 ### 6.5 Source removal
 
 After removing the external service O:
 
-- F becomes undefined on `D0`;
+- F becomes undefined on `D0` and on the branch-conditioned delegated path;
 - H remains exact on `D0`;
-- H remains exact on all 32704 longer-horizon queries.
+- H remains exact on all 32704 longer-horizon queries through its own closed-form predictive operator `K`.
 
-Thus H combines:
+Thus H combines local availability and exact long-horizon predictive propagation while lacking the `U`-like machinery needed to assimilate new evidence and construct new supported states.
 
-1. local availability;
-2. source independence;
-3. exact future-horizon extension;
-
-while still lacking conditioning-history and branch-conditioned extension.
-
-This directly weakens any scalar notion of “extension capability”.
+The correct interpretation is therefore **prediction without filtering/update closure**, not prediction without model structure.
 
 ---
 
-## 7. What v0.4 changes relative to v0.3
+## 7. Relation to the accepted declaration tuple
 
-v0.3 established that finite answer equivalence does not identify internal mechanism and that a longer-horizon domain can separate a full finite table from wider mechanisms.
+v0.3 established that finite answer equivalence does not identify internal mechanism and made source/boundary provenance explicit.
 
-v0.4 shows that even this separation must be interpreted carefully.
+v0.4 initially introduced a separate typed-extension tuple `E`. Independent review showed that this is largely redundant with the already accepted declaration tuple `D`:
 
-A system can pass:
+- future horizon corresponds to declared `H_A`;
+- history/support extension corresponds to `Omega_0`;
+- query-family and branch type belong inside the declared abstraction/query family `A`;
+- intervention corresponds to `I`;
+- shift corresponds to `Delta`.
 
-\[
-E_{\rm horizon}
-\]
+The genuinely additional systems-engineering metadata exposed by v0.3 is **capability source / system boundary**.
 
-while failing:
-
-\[
-E_{\rm history}
-\]
-
-and exposing no
-
-\[
-E_{\rm branch}.
-\]
-
-So a single flag such as
-
-> “generalises beyond the benchmark”
-
-is underspecified.
-
-A more precise contract distinguishes at least:
-
-\[
-E=
-(
-E_{\rm horizon},
-E_{\rm history},
-E_{\rm query},
-E_{\rm branch},
-E_{\rm source},
-E_{\rm intervention},
-E_{\rm shift}
-).
-\]
-
-This tuple is exploratory metadata, **not a proposed new accepted layer**.
+Accordingly, v0.4 does not introduce or defend a new taxonomy. It is better read as a reminder that existing declarations can be widened along different directions, with source/boundary provenance recorded separately.
 
 ---
 
-## 8. Hypothesis disposition after v0.4
+## 8. Candidate-criterion disposition after v0.4
+
+H1-H4 are project-authored candidate criteria, not formal theories attributed to the literature. The toys provide finite counterexamples or weakening evidence against those candidates; they are not claimed to falsify a general theory of world models.
 
 ### H1 — current-state sufficiency alone identifies modelhood
 
 **Status:** unchanged / unsupported as a criterion.
-
-The architectural Agent A example still separates exact current epistemic state from future-query machinery.
 
 ### H2 — persistent recursive state is necessary
 
@@ -455,15 +408,13 @@ The architectural Agent A example still separates exact current epistemic state 
 
 **Status:** remains weakened by delegated Agent F in v0.3.
 
-### H5 — extension capability is a scalar discriminator
+### v0.4 candidate over-reading — extension as a scalar discriminator
 
-**Status:** **weakened by v0.4.**
+**Status:** repaired after independent review.
 
-H has exact future-horizon extension and local source independence while failing extension along other declared axes.
+This candidate was formulated **at v0.4**, not pre-registered as part of H1-H4. The strongest intended reading is not supported because H already owns the exact predictive operator `K`. The useful residue is narrower:
 
-The surviving methodological requirement is:
-
-> when claiming extension or generalisation, declare **which axis of the query contract has been extended**.
+> distinguish predictive propagation from observation assimilation/update, and state which already-declared support/query/horizon condition changed.
 
 ---
 
@@ -471,13 +422,13 @@ The surviving methodological requirement is:
 
 No accepted coordinate changes.
 
-v0.4 is best read as a refinement of declaration discipline around L0/L2-style claims rather than as evidence for a new `L4` or a new constitutive criterion.
+v0.4 is best read as an operational test pattern around existing L0/L2 declarations rather than as evidence for a new `L4` or constitutive criterion.
 
-The construction reinforces three ideas already present in the programme:
+The repaired construction reinforces three ideas already present in the programme:
 
 1. sufficiency is query-relative;
-2. a capability claim is boundary- and support-relative;
-3. “generalisation” without a declared direction can hide qualitatively different mechanisms.
+2. predictive propagation `K` and filtering/update `U` are distinct components;
+3. source/boundary provenance must be explicit when capability is delegated.
 
 The accepted v0.4 framework spine remains frozen.
 
@@ -485,21 +436,17 @@ The accepted v0.4 framework spine remains frozen.
 
 ## 10. Relation to MMALS
 
-For MMALS, v0.4 is relevant because a minimal inference mechanism need not scale uniformly in every direction.
+For MMALS, the repaired result is only a **possible bridge**, not evidence of adaptive abstraction itself. Toy C keeps the abstraction family fixed throughout.
 
-A compact rule may generalise indefinitely over one axis while being unable to assimilate one new observation or one newly relevant variable.
+A compact predictive operator `K` may remain adequate for open-loop queries while lacking the `U`-like machinery needed to assimilate new evidence. That suggests a future question about when an adaptive system must revise or reacquire its representation, but Toy C v0.4 does not establish such a transition.
 
-That suggests a more precise version of the earlier *Minimal Sufficient Dynamic Inference* intuition:
+The source MMALS lifecycle should be preserved in its careful form:
 
-> preserve the smallest structure that is sufficient for the currently declared query contract, but track **which extensions it can support without reconstruction, reacquisition, or model replacement**.
+`REUSE -> ADAPT -> FORK -> CANDIDATE NEW REGIME -> VERIFY -> REMEMBER`
 
-This is compatible with the later adaptive question
+before any `MERGE / PRUNE / RETIRE` decision.
 
-\[
-\mathbb A_t\rightarrow\mathbb A_{t+1},
-\]
-
-because refinement pressure can be triggered by failure on a specific extension axis rather than by an undifferentiated notion of model error.
+The possible bridge to `A_t -> A_{t+1}` therefore remains a hypothesis for later study, not a result of v0.4.
 
 ---
 
@@ -508,11 +455,11 @@ because refinement pressure can be triggered by failure on a specific extension 
 Toy C v0.4 establishes only the following finite/scoped facts:
 
 1. H matches the local model reference exactly on all 4088 baseline queries;
-2. H answers all 32704 new horizon-4/5/6 endpoint queries exactly without adding per-query entries;
-3. H has no coverage for the 28672 newly conditioned depth-3-history queries;
-4. M/F are exact on all 2336 branch-conditioned hypothetical-observation queries, while H/G expose no such interface;
-5. local source independence plus future-horizon extension does not uniquely identify a full generative/update model in this construction;
-6. “extension” is operationally multi-axis.
+2. H contains an exact task-specific predictive operator `K` in closed form and composes it exactly over all 32704 tested longer-horizon endpoint queries;
+3. H has no implemented update route for the 28672 newly conditioned depth-3-history queries;
+4. M and the independently exercised delegated F path are exact on all 2336 branch-conditioned hypothetical-observation queries when O is available; F has 0/2336 defined answers when O is removed;
+5. H/G do not implement the branch-conditioned interface;
+6. prediction `K` and observation-assimilation/update `U` are separable components in this construction.
 
 It does **not** establish:
 
@@ -526,26 +473,15 @@ It does **not** establish:
 
 ---
 
-## 12. Next stopping point
+## 12. Restored next research gate
 
-v0.4 completes the deliberately mechanical continuation of the Toy C falsification chain:
+Toy C v0.3 had already pre-registered a different next test: determine whether the capability-contract description changes a **concrete engineering evaluation or decision** beyond what a flat technical description already determines.
 
-\[
-\text{state}
-\rightarrow
-\text{recursive dynamics}
-\rightarrow
-\text{direct history model}
-\rightarrow
-\text{delegated access}
-\rightarrow
-\text{finite compilation}
-\rightarrow
-\text{typed extension}.
-\]
+That test was deferred when v0.4 was run; the substitution was not recorded contemporaneously and was identified by the independent review. v0.9.1 restores the earlier gate rather than opening Toy C v0.5 or a regime-change construction.
 
-The useful residue is no longer a plausible single architectural predicate.
+The stop condition is explicit:
 
-The next scientifically different step would be to introduce an actual **change of regime, action semantics, observation channel, or query family** and test whether the capability contract predicts which mechanism must be adapted, refined, reacquired, or replaced.
+> if capability-contract metadata changes no engineering decision that the flat technical description would not already change, the eliminativist alternative is strengthened and the mechanical Toy C chain stops.
 
-That would no longer be merely another mechanical extension of the same finite construction; it would begin to connect Toy C to adaptive abstraction and MMALS.
+A regime/action/observation change may still be scientifically useful later, but only after this decision-relevance gate is resolved.
+
