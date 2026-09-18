@@ -1,13 +1,6 @@
 name: Build World Model research draft v0.9
 
 on:
-  push:
-    branches:
-      - research/state-sufficiency-vs-world-modelhood
-    paths:
-      - 'research/toy_c_v0_4/**'
-      - 'history/2026-09-16_toy_c_v0_4_typed_extension.md'
-      - '.github/workflows/build-world-model-v0-9-research.yml'
   workflow_dispatch:
 
 permissions:
