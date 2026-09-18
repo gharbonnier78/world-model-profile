@@ -1,19 +1,21 @@
 #!/usr/bin/env python3
 """
-Toy C v0.4 — Typed extension: horizon generalisation without full generative closure.
+Toy C v0.4 — review-repaired exact finite verification.
 
 Exact finite verification using fractions only.
 
 Purpose:
-- attack a naive reading of Toy C v0.3 in which "query-domain extension" might
-  be treated as a scalar discriminator of model-like structure;
-- construct a task-specific factorised answerer H that extrapolates exactly to
-  arbitrary future action horizons on a fixed history support using only a
-  per-history predictive seed plus the parity of FLIP actions;
-- show that the same H has no coverage when the conditioning-history support is
-  extended and no declared observation-update / branch-conditioned interface.
+- preserve the v0.4 finite construction while repairing its interpretation after
+  independent review;
+- verify that H owns an exact task-specific action-conditioned predictive operator
+  in closed form (the FLIP-parity rule) on a fixed history support;
+- separate that predictive operator K from the observation-assimilation/update
+  machinery U that H does not implement;
+- independently exercise delegated Agent F on branch-conditioned queries, including
+  source removal.
 
-This is a falsification / contract-typing test, not a definition of world-modelhood.
+The project-authored candidate criteria tested by Toy C are counterexample targets,
+not formal theories from the literature and not a definition of world-modelhood.
 """
 
 from fractions import Fraction
@@ -154,6 +156,17 @@ def branch_truth_from_bx(bx, a0, y1, a1):
     return terminal_y_probability_from_bx(post, (a1,))
 
 
+def external_oracle_branch_O(h, a0, y1, a1):
+    """Exact delegated branch-conditioned service used by Agent F."""
+    return branch_truth_from_bx(bx_from_full_history(h), a0, y1, a1)
+
+
+def answer_F_branch(h, a0, y1, a1, service_available=True):
+    if not service_available:
+        return None
+    return external_oracle_branch_O(h, a0, y1, a1)
+
+
 def main():
     states = enumerate_reachable(3)
     counts = {}
@@ -229,19 +242,24 @@ def main():
                         == terminal_y_probability_from_bx(bx, actions)
                     )
 
-    # Branch-conditioned future query: M/F can assimilate a hypothetical new
-    # Y observation; H deliberately exposes no observation-update interface.
-    # We report support/coverage rather than inventing an output for H/G.
-    branch_total = branch_M_exact = branch_F_exact = 0
+    # Branch-conditioned future query. M computes locally. F must actually
+    # traverse its delegated external-service path so source dependence is
+    # measurable rather than copied from M. H/G have no implemented branch API.
+    branch_total = 0
+    branch_M_exact = 0
+    branch_F_with_oracle_exact = 0
+    branch_F_without_oracle_defined = 0
     for t, h, bx, _bn in states:
         if t <= 2:
             for a0, y1, a1 in product(ACTIONS, (0, 1), ACTIONS):
                 branch_total += 1
                 truth = branch_truth_from_bx(bx, a0, y1, a1)
                 m = branch_truth_from_bx(bx_from_full_history(h), a0, y1, a1)
-                f = m  # external oracle is exact by construction
+                f_on = answer_F_branch(h, a0, y1, a1, True)
+                f_off = answer_F_branch(h, a0, y1, a1, False)
                 branch_M_exact += int(m == truth)
-                branch_F_exact += int(f == truth)
+                branch_F_with_oracle_exact += int(f_on == truth)
+                branch_F_without_oracle_defined += int(f_off is not None)
 
     # Source removal.
     f_removed_defined_D0 = 0
@@ -251,7 +269,7 @@ def main():
     seed_count = len(seed_table_H)
     result = {
         "toy": "Toy C v0.4",
-        "subtitle": "Typed extension: horizon generalisation without full generative closure",
+        "subtitle": "Review repair: task-specific predictive operator K without observation-update U",
         "environment": "same finite POMDP as Toy C v0.2/v0.3",
         "reachable_history_counts": {str(k): v for k, v in sorted(counts.items())},
         "agent_H_factorised_query_program": {
@@ -262,10 +280,14 @@ def main():
             "owns_declared_hidden_state_model": False,
             "owns_declared_observation_update_rule": False,
             "owns_declared_nuisance_model": False,
+            "owns_action_conditioned_predictive_operator_K": True,
+            "predictive_operator_form": "closed-form FLIP-parity action on q(h)",
             "uses_external_model_service": False,
             "note": (
-                "H is intentionally a task-specific query program. The experiment does "
-                "not assert whether such an object should or should not be called a model."
+                "Independent review identified the parity rule as the exact task-specific "
+                "predictive operator K in closed form. H therefore witnesses prediction "
+                "without an implemented observation-assimilation/update operator U; the "
+                "experiment does not decide whether H should be called a world model."
             )
         },
         "baseline_D0": {
@@ -279,10 +301,11 @@ def main():
             "H_factorised_exact": f"{baseline['H']}/{len(D0)}",
             "G_query_entries": len(compiled_G),
             "H_seed_entries": seed_count,
-            "entry_count_factor_G_over_H": fstr(F(len(compiled_G), seed_count)),
-            "complexity_caveat": (
-                "Entry counts are bookkeeping only; the rule/code description length of H "
-                "is not included, so this is not a formal compression or MDL comparison."
+            "query_sequences_per_supported_history": 14,
+            "entry_count_note": (
+                "4088/292=14 is the identity 2+4+8, the number of baseline action "
+                "sequences per supported history. It is not an independently measured "
+                "compression ratio and carries no MDL or complexity claim."
             )
         },
         "typed_extension": {
@@ -296,9 +319,10 @@ def main():
                 "H_defined": f"{horizon['H_defined']}/{len(D_horizon)}",
                 "H_exact_when_defined": f"{horizon['H_exact']}/{horizon['H_defined']}",
                 "interpretation": (
-                    "H extrapolates exactly to longer future action horizons without new "
-                    "per-query cache entries. Therefore horizon extension alone does not "
-                    "identify a full generative/update model."
+                    "H owns the exact task-specific action-conditioned predictive operator "
+                    "K in closed form and therefore composes endpoint predictions to longer "
+                    "horizons on its fixed supported histories. This does not test absence "
+                    "of predictive model structure; it separates prediction from filtering/update."
                 )
             },
             "conditioning_history_extension": {
@@ -318,12 +342,16 @@ def main():
                 "description": "P(Y_{t+2}=1 | h_t, a0, hypothetical Y_{t+1}=y1, a1)",
                 "queries": branch_total,
                 "M_exact": f"{branch_M_exact}/{branch_total}",
-                "F_with_oracle_exact": f"{branch_F_exact}/{branch_total}",
-                "G_declared_interface": "UNSUPPORTED",
-                "H_declared_interface": "UNSUPPORTED",
+                "F_with_oracle_exact": f"{branch_F_with_oracle_exact}/{branch_total}",
+                "F_without_oracle_defined": f"{branch_F_without_oracle_defined}/{branch_total}",
+                "G_interface_status": "NOT_IMPLEMENTED",
+                "H_interface_status": "NOT_IMPLEMENTED",
                 "interpretation": (
-                    "Open-loop horizon extrapolation is distinct from assimilating hypothetical "
-                    "future evidence and continuing the prediction conditionally."
+                    "M and the independently exercised delegated F path can assimilate "
+                    "hypothetical future evidence when the oracle is available; F becomes "
+                    "undefined when that source is removed. H/G do not implement this "
+                    "branch-conditioned interface. The scoped distinction is prediction "
+                    "versus observation-assimilation/filtering, not model versus non-model."
                 )
             }
         },
@@ -352,22 +380,24 @@ def main():
             "H1_sufficiency_alone_insufficient": "unchanged",
             "H2_persistent_recursive_state_necessary": "remains weakened",
             "H3_local_internal_model_ownership_necessary": "remains weakened by v0.3",
-            "H5_extension_as_scalar_modelhood_discriminator": (
-                "weakened: H has exact long-horizon extension on one axis without "
-                "conditioning-history or branch-conditioned extension"
+            "v0_4_candidate_H5_status": (
+                "H5 was formulated at v0.4 as a candidate over-reading of v0.3, not "
+                "pre-registered. Independent review shows H already owns predictive K, "
+                "so v0.4 is better interpreted as prediction-vs-filtering decomposition."
             ),
-            "contract_refinement": (
-                "extension should be typed by axis (future horizon, conditioning-history "
-                "support, query family, hypothetical-evidence branching, source availability, shift)"
+            "declaration_relation": (
+                "Most proposed extension directions are already components of the accepted "
+                "declaration tuple D (query family, horizon, history support, intervention, "
+                "shift). Source/boundary provenance remains separate evaluation metadata."
             )
         },
         "scope": {
             "establishes": [
                 "A task-specific factorised query program can exactly match the model-owning reference on D0.",
-                "The same program can exactly extrapolate to longer future action horizons on its fixed conditioning-history support without adding per-query cache entries.",
-                "Future-horizon extension and conditioning-history extension are distinct capabilities in this construction.",
-                "Open-loop endpoint prediction and branch-conditioned assimilation of hypothetical future evidence are distinct declared interfaces.",
-                "Local source independence plus horizon extension is still insufficient, by itself, to identify a full generative/update model."
+                "H owns an exact task-specific predictive operator K in closed form and composes it exactly to longer future horizons on fixed supported histories.",
+                "H lacks an implemented observation-assimilation/update operator U, so prediction and filtering/update are separable components in this construction.",
+                "The delegated F branch-conditioned path is exact when its external oracle is available and undefined when that source is removed.",
+                "H/G do not implement the branch-conditioned hypothetical-evidence interface; this is an interface fact, not a measured failure score."
             ],
             "does_not_establish": [
                 "That H is or is not a world model.",
