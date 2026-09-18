@@ -1,0 +1,142 @@
+name: Build World Model research draft v0.9.1 repairs
+
+on:
+  push:
+    branches:
+      - research/state-sufficiency-vs-world-modelhood
+    paths:
+      - 'research/toy_c_v0_4/**'
+      - 'research/v0_9_1_repairs/**'
+      - 'history/2026-09-16_toy_c_v0_4_typed_extension.md'
+      - 'review/INDEPENDENT_REVIEW_V0_9_CLAUDE.md'
+      - '.github/workflows/build-world-model-v0-9-1-repairs.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout research branch
+        uses: actions/checkout@v4
+        with:
+          ref: research/state-sufficiency-vs-world-modelhood
+          fetch-depth: 0
+
+      - name: Install LaTeX
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y texlive-latex-base texlive-latex-extra texlive-fonts-recommended
+
+      - name: Verify exact finite evidence
+        shell: bash
+        run: |
+          set -euo pipefail
+          python research/toy_c_v0_1/verify_toy_c_v0_1.py > /tmp/toy_c_v01.json
+          diff -u research/toy_c_v0_1/results_v0_1.json /tmp/toy_c_v01.json
+          python research/toy_c_v0_2/verify_toy_c_v0_2.py > /tmp/toy_c_v02.json
+          diff -u research/toy_c_v0_2/results_v0_2.json /tmp/toy_c_v02.json
+          python research/toy_c_v0_3/verify_toy_c_v0_3.py > /tmp/toy_c_v03.json
+          diff -u research/toy_c_v0_3/results_v0_3.json /tmp/toy_c_v03.json
+          python research/toy_c_v0_4/verify_toy_c_v0_4.py > /tmp/toy_c_v04.json
+          diff -u research/toy_c_v0_4/results_v0_4.json /tmp/toy_c_v04.json
+
+      - name: Transform pinned v0.9 TeX to v0.9.1
+        shell: bash
+        run: |
+          set -euo pipefail
+          python research/v0_9_1_repairs/apply_v0_9_to_v0_9_1.py
+
+      - name: Assemble v0.9.1 repairs-only package
+        shell: bash
+        run: |
+          set -euo pipefail
+          OLD='paper/world_model_profile_research_v0_9'
+          OUT='paper/world_model_profile_research_v0_9_1'
+          mkdir -p "$OUT"
+
+          cp "$OLD/fig_toy_a_regret.png" "$OUT/"
+          cp "$OLD/fig_rho_three_history.png" "$OUT/"
+          cp "$OLD/verify_finite_separations.py" "$OUT/"
+          cp "$OLD/finite_separation_results.json" "$OUT/"
+          cp "$OLD/toy_a_grid.csv" "$OUT/"
+          cp "$OLD/verify_supporting_diagnostics.py" "$OUT/"
+          cp "$OLD/supporting_diagnostics_results.json" "$OUT/"
+
+          for v in 1 2 3 4; do
+            cp "research/toy_c_v0_${v}/TOY_C_V0_${v}_SPEC.md" "$OUT/"
+            cp "research/toy_c_v0_${v}/verify_toy_c_v0_${v}.py" "$OUT/"
+            cp "research/toy_c_v0_${v}/results_v0_${v}.json" "$OUT/"
+          done
+
+          cp history/2026-09-15_toy_c_state_sufficiency_chronicle.md "$OUT/CHRONICLE_2026-09-15_TOY_C_V0_1_TO_V0_3.md"
+          cp history/2026-09-16_toy_c_v0_4_typed_extension.md "$OUT/CHRONICLE_2026-09-16_TOY_C_V0_4_WITH_REVIEW_ADDENDUM.md"
+          cp review/INDEPENDENT_REVIEW_V0_9_CLAUDE.md "$OUT/INDEPENDENT_REVIEW_V0_9_CLAUDE.md"
+          cp review/CLAUDE_FULL_REVIEW_HANDOFF_V0_9.md "$OUT/CLAUDE_FULL_REVIEW_HANDOFF_V0_9.md"
+
+      - name: Compile PDF
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd paper/world_model_profile_research_v0_9_1
+          pdflatex -interaction=nonstopmode -halt-on-error world_model_profile_research_v0_9_1.tex
+          pdflatex -interaction=nonstopmode -halt-on-error world_model_profile_research_v0_9_1.tex
+          test -s world_model_profile_research_v0_9_1.pdf
+          rm -f *.aux *.log *.out
+
+      - name: Write package manifest
+        shell: bash
+        run: |
+          set -euo pipefail
+          OUT='paper/world_model_profile_research_v0_9_1'
+          cat > "$OUT/README.md" <<'EOF'
+          # World Model Profile — post-v0.6 research draft v0.9.1
+
+          **Status:** repairs-only revision after the independent v0.9 review. No new Toy C experiment is introduced and the accepted v0.4 framework spine remains frozen.
+
+          This package:
+          - preserves v0.9 as the independently reviewed snapshot;
+          - repairs the delegated F branch-conditioned verifier path and source-removal check;
+          - reinterprets Agent H as owning the task-specific predictive operator K while lacking observation-assimilation/update U;
+          - adds PSR, Dyna, and classical partial-observation/filtering prior art at point of use;
+          - records that the v0.4 scalar-extension candidate was formulated at v0.4 rather than pre-registered;
+          - preserves the original Chronicle narrative and adds a dated review addendum rather than rewriting history;
+          - restores the pre-registered decision-relevance / eliminativist test as the next research gate.
+
+          Reproduce the exact Toy C evidence with:
+
+          ```bash
+          python verify_toy_c_v0_1.py
+          python verify_toy_c_v0_2.py
+          python verify_toy_c_v0_3.py
+          python verify_toy_c_v0_4.py
+          ```
+
+          v0.9.1 is deterministically transformed from the checksum-pinned v0.9 TeX by `research/v0_9_1_repairs/apply_v0_9_to_v0_9_1.py`.
+          EOF
+
+          (
+            cd "$OUT"
+            sha256sum               world_model_profile_research_v0_9_1.tex               world_model_profile_research_v0_9_1.pdf               TOY_C_V0_1_SPEC.md verify_toy_c_v0_1.py results_v0_1.json               TOY_C_V0_2_SPEC.md verify_toy_c_v0_2.py results_v0_2.json               TOY_C_V0_3_SPEC.md verify_toy_c_v0_3.py results_v0_3.json               TOY_C_V0_4_SPEC.md verify_toy_c_v0_4.py results_v0_4.json               CHRONICLE_2026-09-15_TOY_C_V0_1_TO_V0_3.md               CHRONICLE_2026-09-16_TOY_C_V0_4_WITH_REVIEW_ADDENDUM.md               INDEPENDENT_REVIEW_V0_9_CLAUDE.md CLAUDE_FULL_REVIEW_HANDOFF_V0_9.md               verify_finite_separations.py finite_separation_results.json toy_a_grid.csv               verify_supporting_diagnostics.py supporting_diagnostics_results.json               fig_toy_a_regret.png fig_rho_three_history.png               > SHA256SUMS.txt
+          )
+
+      - name: Upload v0.9.1 artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: world-model-profile-research-v0-9-1
+          path: paper/world_model_profile_research_v0_9_1
+          if-no-files-found: error
+
+      - name: Commit generated v0.9.1 package
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add paper/world_model_profile_research_v0_9_1
+          git diff --cached --quiet && exit 0
+          git commit -m 'paper: build repairs-only research draft v0.9.1'
+          git pull --rebase origin research/state-sufficiency-vs-world-modelhood
+          git push origin HEAD:research/state-sufficiency-vs-world-modelhood
